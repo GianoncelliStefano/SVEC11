@@ -110,10 +110,10 @@ function CALL_SVEC_M135A
                     GEOMETRY.r_tip       = 9;      % [mm] vane tip radius
                     GEOMETRY.TgAngle     = 0;      % [°]  sealing arc between stator and rotor
                     GEOMETRY.RSclr       = 50;     % [micron] clearance between rotor and stator
-                    GEOMETRY.INport_Amin = 1;      % [mm^2] Inlet port minimum area 
-                    GEOMETRY.INport_Amax = 2;      % [mm^2] Inlet port maximum area 
-                    GEOMETRY.OUTport_Amin= 1;      % [mm^2] Outlet port minimum area 
-                    GEOMETRY.OUTport_Amax= 2;      % [mm^2] Outlet port maximum area 
+                    GEOMETRY.INport_Amin = 1;
+                    GEOMETRY.INport_Amax = 2;
+                    GEOMETRY.OUTport_Amin= 1;
+                    GEOMETRY.OUTport_Amax= 2;
                     
                 case 2  % elliptical geometry
                     GEOMETRY.StdProcess  = 1;      % [-]  design process for this machine  1: Compression   2: Expansion
@@ -130,10 +130,10 @@ function CALL_SVEC_M135A
                     GEOMETRY.th_DisClose = 170;    % [°] delivery closing angle
                     GEOMETRY.TgAngle     = 0;      % [°] sealing arc between stator and rotor (TgAngle = 0 if no socket is present)
                     GEOMETRY.RSclr       = 50;     % [micron] clearance between rotor and stator
-                    GEOMETRY.INport_Amin = 1;      % [mm^2] Inlet port minimum area 
-                    GEOMETRY.INport_Amax = 2;      % [mm^2] Inlet port maximum area 
-                    GEOMETRY.OUTport_Amin= 1;      % [mm^2] Outlet port minimum area 
-                    GEOMETRY.OUTport_Amax= 2;      % [mm^2] Outlet port maximum area 
+                    GEOMETRY.INport_Amin = 1;
+                    GEOMETRY.INport_Amax = 2;
+                    GEOMETRY.OUTport_Amin= 1;
+                    GEOMETRY.OUTport_Amax= 2;
                 otherwise
                     warning('CALL_SVECmodelMain:Logic','Invalid value of GEOMETRY.c');
                     SX_Logfile ('e',{lastwarn});
