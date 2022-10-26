@@ -137,24 +137,24 @@ function [mass_vane,moment_inertia_vane,theta_v,Y_F,DELTA,Sigma,LAMBDA,XI,Xg_van
             SX_Logfile ('w',{lastwarn});
         end
         
-        if license('test','Symbolic_Toolbox')
-            if contains(struct2array(ver), 'Symbolic Math Toolbox')
-                syms limite;            
-                chck_4 = double(limit(asin(X_F/limite), limite, r_tip));
-                chck_5 = double(limit(acos((s-X_F)/limite), limite, r_tip));
-                chck_6 = double(limit(acos((0.5*s-X_F)/limite), limite, r_tip));
-                if abs(chck_4-DELTA) >toll_t || abs(chck_5-LAMBDA)>toll_t || abs(chck_6-XI)>toll_t
-                    warning ('Incorrect geometry: check angles DELTA LAMBDA XI')
-                end
-                chck_7 = abs(Xg_vane - double(limit((limite*(l-r_tip)*Xg(1)+Area(2)*Xg(2)+Area(3)*Xg(3)+Area(4)*Xg(4))/(limite*(l-r_tip)+Area(2)+Area(3)+Area(4)),limite,s))) < toll_t;
-                chck_8 = abs(Yg_vane - double(limit((limite*(l-r_tip)*Yg(1)+Area(2)*Yg(2)+Area(3)*Yg(3)+Area(4)*Yg(4))/(limite*(l-r_tip)+Area(2)+Area(3)+Area(4))*(1+offsetG/100),limite,s))) < toll_t;
-                if chck_7 ~= 1 || chck_8 ~= 1
-                    warning('Incorrect geometry: check center of mass Xg_vane Yg_vane')
-                end
-            else
-                warning ('Download Symbolic Math Toolbox for geometry checks')
-            end
-        end
+%         if license('test','Symbolic_Toolbox')
+%             if contains(struct2array(ver), 'Symbolic Math Toolbox')
+%                 syms limite;            
+%                 chck_4 = double(limit(asin(X_F/limite), limite, r_tip));
+%                 chck_5 = double(limit(acos((s-X_F)/limite), limite, r_tip));
+%                 chck_6 = double(limit(acos((0.5*s-X_F)/limite), limite, r_tip));
+%                 if abs(chck_4-DELTA) >toll_t || abs(chck_5-LAMBDA)>toll_t || abs(chck_6-XI)>toll_t
+%                     warning ('Incorrect geometry: check angles DELTA LAMBDA XI')
+%                 end
+%                 chck_7 = abs(Xg_vane - double(limit((limite*(l-r_tip)*Xg(1)+Area(2)*Xg(2)+Area(3)*Xg(3)+Area(4)*Xg(4))/(limite*(l-r_tip)+Area(2)+Area(3)+Area(4)),limite,s))) < toll_t;
+%                 chck_8 = abs(Yg_vane - double(limit((limite*(l-r_tip)*Yg(1)+Area(2)*Yg(2)+Area(3)*Yg(3)+Area(4)*Yg(4))/(limite*(l-r_tip)+Area(2)+Area(3)+Area(4))*(1+offsetG/100),limite,s))) < toll_t;
+%                 if chck_7 ~= 1 || chck_8 ~= 1
+%                     warning('Incorrect geometry: check center of mass Xg_vane Yg_vane')
+%                 end
+%             else
+%                 warning ('Download Symbolic Math Toolbox for geometry checks')
+%             end
+%         end
 
         clear chck_1 chck_2 chck_3 chck_4 chck_5 chck_6 chck_7 chck_8
     

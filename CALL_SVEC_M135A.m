@@ -56,7 +56,7 @@ function CALL_SVEC_M135A
         PROCESS.rpm     = 1500;     % [rpm]   Rotational speed
         PROCESS.p_suc   = 1;     % [barA]  Suction pressure
         PROCESS.p_del   = 8.5;        % [barA]  Delivery pressure - (use NaN for geometric pressure)
-        PROCESS.T_suc   = 20;     % [°C]    Gas inlet temperature
+        PROCESS.T_suc   = 28;     % [°C]    Gas inlet temperature
         PROCESS.T_0     = 20.0;     % [°C]    Reference temperature for energy balance
         PROCESS.p_0     = 1;       % [barA]  Reference pressure
         PROCESS.f_b     = 0.008;    % [adim]  Bushing friction coefficient
@@ -133,10 +133,10 @@ function CALL_SVEC_M135A
         else
             [GEOMETRY,fOK] = SX_DatabaseLoad('Mach', Machine_selected,fOK);
         end
-        GEOMETRY.VSclr = 259;                            % [micron] vane-end-plate clearance size
-        GEOMETRY.PEclr = 259;                            % [micron] rotor-end-plate clearance size
+        GEOMETRY.VSclr = 225;                            % [micron] vane-end-plate clearance size
+        GEOMETRY.PEclr = 225;                            % [micron] rotor-end-plate clearance size
         GEOMETRY.machine_name = Machine_selected;
-        GEOMETRY.RSclr = 62;
+        GEOMETRY.RSclr = 72.5;
         clear Machine_selected
         
         %% GAS %%
