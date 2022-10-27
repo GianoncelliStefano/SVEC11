@@ -59,7 +59,7 @@ m_port_inf = Pinf*Uinf*Amean/(Rgas*Tinf);
 %% MODEL SOLUTION AT STEADY STATE - simple model %%
 function [Pss, Tss, Uss,Pd, Td]=Inlet_simplemodel(P,T,Xi,Amean,gamma,R,m)
 fun1= @(Pd) P/(R*T)*(1-Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(1/(gamma-1))*Xi*Amean*(((2*gamma*R*T)/(gamma-1))*(1-(Pd/P)^((gamma-1)/gamma)))^(1/2)-m;
-Pdrange=[0.1 P];
+Pdrange=[10000 P];
 Pd=fzero(fun1,Pdrange);
 Uss=((2*gamma*R*T)/(gamma-1)*Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(1/2);
 Pss=P*(1-Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(gamma/(gamma-1));

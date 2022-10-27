@@ -29,8 +29,7 @@ function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_com
 % HISTORY:  Gianoncelli_Genoni: creation of the file, see thesis for
 % further information
 
-    %% DEFINITIONS %%
-
+ %% DEFINITIONS %%
  port_type="inlet";
  R_g        = SX_Constant({'UniGasConstant'})/MM_g;  % specific gas constant [J/ kg K];
  gamma= (c_v + R_g)/c_v;
@@ -41,11 +40,9 @@ function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_com
 
 while Loopinlet
 [m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_suc , T_suc , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
-mast = Pout*V_comp(1)/(R_g*Tout*Z_suc)*c*n_van*rpm/60;
-
+mast = Pout*V_comp(1)/(R_g*Tout)*c*n_van*rpm/60;
 err= abs(mast-m_gas_guess);
 checkloop = err<toll_d;
-
 if  checkloop
     Psuc= Pout;
     Tsuc=Tout;
