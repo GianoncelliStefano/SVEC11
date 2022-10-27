@@ -114,7 +114,8 @@ function CALL_SVEC_M135A
                     GEOMETRY.INport_Amax = 2;      % [mm^2] Intlet port maximum passage area 
                     GEOMETRY.OUTport_Amin= 1;      % [mm^2] Outlet port minimum passage area
                     GEOMETRY.OUTport_Amax= 2;      % [mm^2] Outlet port maximum passage area
-                    
+                    GEOMETRY.VSclr = 225;          % [micron] vane-end-plate clearance size
+                    GEOMETRY.PEclr = 225;          % [micron] rotor-end-plate clearance size
                 case 2  % elliptical geometry
                     GEOMETRY.StdProcess  = 1;      % [-]  design process for this machine  1: Compression   2: Expansion
                     GEOMETRY.d           = 111;    % [mm] rotor diameter
@@ -134,6 +135,8 @@ function CALL_SVEC_M135A
                     GEOMETRY.INport_Amax = 2;      % [mm^2] Intlet port maximum passage area 
                     GEOMETRY.OUTport_Amin= 1;      % [mm^2] Outlet port minimum passage area
                     GEOMETRY.OUTport_Amax= 2;      % [mm^2] Outlet port maximum passage area
+                    GEOMETRY.VSclr = 225;          % [micron] vane-end-plate clearance size
+                    GEOMETRY.PEclr = 225;          % [micron] rotor-end-plate clearance size
                 otherwise
                     warning('CALL_SVECmodelMain:Logic','Invalid value of GEOMETRY.c');
                     SX_Logfile ('e',{lastwarn});
@@ -142,10 +145,8 @@ function CALL_SVEC_M135A
         else
             [GEOMETRY,fOK] = SX_DatabaseLoad('Mach', Machine_selected,fOK);
         end
-        GEOMETRY.VSclr = 225;                            % [micron] vane-end-plate clearance size
-        GEOMETRY.PEclr = 225;                            % [micron] rotor-end-plate clearance size
+    
         GEOMETRY.machine_name = Machine_selected;
-        GEOMETRY.RSclr = 72.5;
         clear Machine_selected
         
         %% INLET/OUTLET DUCTS PARAMETERS %%
