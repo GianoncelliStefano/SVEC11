@@ -93,9 +93,9 @@
     if fOK
         [V_suc,V_dis,V_comp] = S2_VolumeSplit (V_cell,pos_SucClose,pos_DisOpen,Npt_cell);
     end
-%     %% SINLET- INLET DUCT+PORT MODEL %%
-%     if fOK, [] = Sinlet()
-%     end
+    %% SINLET- INLET DUCT+PORT MODEL %%
+    if fOK, [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v)
+    end
 
       
     %% S3 - THERMODYNAMICS %%
