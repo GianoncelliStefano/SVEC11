@@ -53,7 +53,7 @@ switch port_type
         [Pinf, Tinf,Uinf,Pout,Tout]=Outlet_simplemodel(Pin,Tin,Xi,Amean,gamma,Rgas,m);UGGYTYT
 end
 m_port_inf = Pinf*Uinf*Amean/(Rgas*Tinf);
-
+%check su minf?
 
 
 %% MODEL SOLUTION AT STEADY STATE - simple model %%
@@ -70,7 +70,7 @@ end
 function [Pss , Tss, Uss, Pu , Tu]=Outlet_simplemodel(P,T,Xi, Amean,gamma,R,m)
 Tu=T;
 fun2= @(Pu) Pu/(R*Tu)*(1-Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(1/(gamma-1))*Xi*Amean*(((2*gamma*R*Tu)/(gamma-1))*(1-(P/Pu)^((gamma-1)/gamma)))^(1/2)-m;
-Purange=[P 6];
+Purange=[P 6000000];
 Pu=fzero(fun2,Purange);
 Uss=((2*gamma*R*Tu)/(gamma-1)*Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(1/2);
 Pss=Pu*(1-Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(gamma/(gamma-1));

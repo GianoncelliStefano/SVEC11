@@ -33,12 +33,11 @@ function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_com
  port_type="inlet";
  R_g        = SX_Constant({'UniGasConstant'})/MM_g;  % specific gas constant [J/ kg K];
  gamma= (c_v + R_g)/c_v;
- %m_gas_guess = p_suc*V_comp(1)/(R_g*T_suc*Z_suc)*c*n_van*rpm/60;
  m_gas_guess = p_suc*V_comp(1)/(R_g*T_suc)*c*n_van*rpm/60;   %portata massica che esce dal modello di andre 
- alfa=0.01;
+ alfa=0.00001;
  Loopinlet=1;
-
-while Loopinlet
+ toll_d=1e-6;
+ while Loopinlet
 [m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_suc , T_suc , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
 mast = Pout*V_comp(1)/(R_g*Tout)*c*n_van*rpm/60;
 err= abs(mast-m_gas_guess);
@@ -48,7 +47,7 @@ if  checkloop
     Tsuc=Tout;
     Loopinlet=0;
 else
-    m_gas_guess= (m_gas_guess)*(1+alfa);
+    m_gas_guess= (m_gas_guess)*(1-alfa);
 end
 end
 end 
