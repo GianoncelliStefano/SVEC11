@@ -93,7 +93,11 @@
     if fOK
         [V_suc,V_dis,V_comp] = S2_VolumeSplit (V_cell,pos_SucClose,pos_DisOpen,Npt_cell);
     end
-    
+%     %% SINLET- INLET DUCT+PORT MODEL %%
+%     if fOK, [] = Sinlet()
+%     end
+
+      
     %% S3 - THERMODYNAMICS %%
     % Computation of pressure and temperature during closed-cell process
     if fOK, [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_suction,Q_g_PE_closed_cell,Q_g_VS_closed_cell,Fleak_g,Fleak_g_PE_suc,Fleak_g_VS_suc,Fleak_g_PE_cell_closed,Fleak_g_VS_cell_closed,m_g,q_gas_Id,q_gas,T_l,T_g,T_mix,T_lmean,p_comp,rho_o,nu_o,sigma_o,m_inj_nzl,V_inj_nzl,V_inj_cls,epsm,W_cell,n_pltr,Dg,fg,cls_indx,M,m_gas_Id,m_gas,m_liq_Id,m_liq,Q_th,R_g,fOK,theta_vane,theta_SucOpen,theta_SucClose,theta_DisOpen,theta_DisClose,Flow_RS,Flow_VS,Flow_PE] ...
@@ -103,7 +107,11 @@
     % Different pressure vectors are computed
     if fOK, [p_out,p_cell,p_1,p_2,p_geom] = S3_Pressure(theta,theta_vane,p_comp,pos_SucClose,pos_DisOpen,Npt_cell,p_del);
     end
-    
+
+%     %% SOUTLET - OUTLET DUCT+PORT MODEL %%
+%     if fOK, [] = Soutlet()
+%     end
+
     %% S4 - MECHANICS %%
     if c == 1
         % Calculation of forces and acting on a single vane [NOTE: fix the checks]
