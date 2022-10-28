@@ -33,7 +33,7 @@ function [ Pout , Tout] = Soutlet( Pin , Tin , OUTport_Amax, OUTport_Amin,mgas, 
  port_type="outlet";
  R_g        = SX_Constant({'UniGasConstant'})/MM_g;  % specific gas constant [J/ kg K];
  gamma= (c_v + R_g)/c_v;
- alfa=0.00001;
+ alfa=0.001;
  Pd=Pin; %Sara poi da aggiornare aggiungendo la possibilita di mettere la pressione di genny
  LoopOutlet=1;
  toll_d=1e-6;
@@ -44,7 +44,7 @@ checkloop = err<toll_d;
 if  checkloop
     Loopinlet=0;
 else
-    Pd = Pd*(1-alfa);
+    Pd = Pd*(1+alfa);
 end
 end
 end 

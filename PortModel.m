@@ -70,7 +70,7 @@ end
 function [Pss , Tss, Uss, Pu , Tu]=Outlet_simplemodel(P,T,Xi, Amean,gamma,R,m)
 Tu=T;
 fun2= @(Pu) Pu/(R*Tu)*(1-Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(1/(gamma-1))*Xi*Amean*(((2*gamma*R*Tu)/(gamma-1))*(1-(P/Pu)^((gamma-1)/gamma)))^(1/2)-m;
-Purange=[P 9.3363e5];
+Purange=[P 50e5];
 Pu=fzero(fun2,Purange);
 Uss=((2*gamma*R*Tu)/(gamma-1)*Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(1/2);
 Pss=Pu*(1-Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(gamma/(gamma-1));
