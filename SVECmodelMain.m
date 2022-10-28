@@ -109,8 +109,8 @@
     end
 
       %% SOUTLET - OUTLET DUCT+PORT MODEL %%
-%     if fOK, [] = Soutlet()
-%     end
+    if fOK, [p_u,T_u] = Soutlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
+    end
 
     %% S4 - MECHANICS %%
     if c == 1
