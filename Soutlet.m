@@ -36,15 +36,15 @@ function [ Pout , Tout] = Soutlet( Pin , Tin , OUTport_Amax, OUTport_Amin,mgas, 
  alfa=0.001;
  Pd=Pin; %Sara poi da aggiornare aggiungendo la possibilita di mettere la pressione di genny
  LoopOutlet=1;
- toll_d=1e-6;
+ toll_d=10000;
  while LoopOutlet
 [m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(Pd , Tin , OUTport_Amax , OUTport_Amin, gamma, R_g,  mgas, port_type);
 err= abs(Pout-Pgeom);
 checkloop = err<toll_d;
 if  checkloop
-    Loopinlet=0;
+    LoopOutlet=0;
 else
-%   Aggiorna Tdel, ricalcolari Pd e riprocedi con il ciclo
+   Pd=Pd*(1+alfa);
 end
 end
 end 
