@@ -44,7 +44,7 @@ checkloop = err<toll_d;
 if  checkloop
     Loopinlet=0;
 else
-    Pd = Pd*(1+alfa);
+%   Aggiorna Tdel, ricalcolari Pd e riprocedi con il ciclo
 end
 end
 end 
