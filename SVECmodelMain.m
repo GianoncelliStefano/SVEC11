@@ -94,8 +94,9 @@
     if fOK
         [V_suc,V_dis,V_comp] = S2_VolumeSplit (V_cell,pos_SucClose,pos_DisOpen,Npt_cell);
     end
+
     %% SINLET- INLET DUCT+PORT MODEL %%
-    if fOK, [p_suc,T_suc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_i,D_f,roughness)
+    if fOK, [p_suc,T_suc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_i,D_f,roughness);
     end
 
       
@@ -109,9 +110,9 @@
     if fOK, [p_out,p_cell,p_1,p_2,p_geom] = S3_Pressure(theta,theta_vane,p_comp,pos_SucClose,pos_DisOpen,Npt_cell,p_del);
     end
 
-      %% SOUTLET - OUTLET DUCT+PORT MODEL %%
-    if fOK, [p_u,T_u] = Soutlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
-    end
+%       %% SOUTLET - OUTLET DUCT+PORT MODEL %%
+%     if fOK, [p_u,T_u] = Soutlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
+%     end
 
     %% S4 - MECHANICS %%
     if c == 1

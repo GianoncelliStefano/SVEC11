@@ -39,22 +39,30 @@ function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_com
  toll_d=1e-6;
  fb=1;
 coeff=[aQ,bQ,cQ];
-
+mastseries=[0];
+counter=0;
 
  while Loopinlet
 
 [p_f,T_f,rho_f,delta_p] = Concentrated_Losses(fb,coeff,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake valve pressure drop
 
-[m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_suc , T_suc , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
+[m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_f , T_f , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
+
 mast = Pout*V_comp(1)/(R_g*Tout)*c*n_van*rpm/60;
+mastseries=[mastseries , mast];
+
 err= abs(mast-m_gas_guess);
 checkloop = err<toll_d;
+
+
 if  checkloop
     Psuc= Pout;
     Tsuc=Tout;
     Loopinlet=0;
+    
 else
     m_gas_guess= (m_gas_guess)*(1-alfa);
+    counter=counter+1
 end
 end
 end 
