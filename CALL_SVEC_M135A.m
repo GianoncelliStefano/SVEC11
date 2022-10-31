@@ -163,7 +163,7 @@ function CALL_SVEC_M135A
 
         if strcmp(Intake_valve_selected,'UserDefined')
             INTAKE.aQ      =  106320;
-            INTAKE.bQ     = -1537.7;
+            INTAKE.bQ      = -1537.7;
             INTAKE.cQ      =  1.5604;
             
         else
@@ -172,6 +172,32 @@ function CALL_SVEC_M135A
 
         INTAKE.IntakeValve_name   = Intake_valve_selected;
         clear Intake_valve_selected
+
+        % INTAKE FILTER SELECTION %      
+        % Available intake filter:
+        % Intake valves
+        % ||  ''  | '' |  ''  |  ''  |  ''  |  ''  || 
+        % ||  ''  | '' |  ''  |  ''  |  ''  |  '    '  || 
+        % ||  ''  | '' |  '' |  ''    |  ''  |  '    '  || 
+        
+        Intake_filter_selected   = 'D080069';
+
+        if strcmp(Intake_filter_selected,'UserDefined')
+            INTAKE.dQ      =  106320;
+            INTAKE.eQ      = -1537.7;
+            INTAKE.fQ      =  1.5604;
+            
+        else
+            [FILTER,fOK]   = SX_DatabaseLoad('Intake',Intake_filter_selected,fOK);
+            INTAKE.dQ = FILTER.dQ;
+            INTAKE.eQ = FILTER.eQ;
+            INTAKE.fQ = FILTER.fQ;
+        end
+
+        INTAKE.IntakeFilter_name   = Intake_filter_selected;
+        clear Intake_filter_selected FILTER
+
+
         % INTAKE DUCT SELECTION %     
         INTAKE.pipe   = "corrugated";              %'standard' or 'corrugated'
         INTAKE.cpitch  = 0.012;                    %corrugated pitch [m]
