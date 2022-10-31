@@ -1,4 +1,4 @@
-function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, VANE, NOZZLES, STRESS, STRESSsh, SHAFT, BUSHING)
+function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, VANE, NOZZLES, STRESS, STRESSsh, SHAFT, BUSHING,INTAKE)
 % This function take as input all the structure from CALL_SVECmodelMain and
 % perform some preprocessing operations:
 % - conversion of string variables to numeric (rot_dir)
@@ -187,7 +187,7 @@ function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, V
 
     %% SAVE SIMULATION FILE %%
     % save simulation.mat file except for IO struct  
-    save (IO.fullsavename, 'FLAG', 'NUMERIC', 'PROCESS', 'GEOMETRY', 'GAS', 'LIQUID', 'LEAK', 'VANE', 'NOZZLES', 'STRESS', 'STRESSsh', 'SHAFT', 'BUSHING');
+    save (IO.fullsavename, 'FLAG', 'NUMERIC', 'PROCESS', 'GEOMETRY', 'GAS', 'LIQUID', 'LEAK', 'VANE', 'NOZZLES', 'STRESS', 'STRESSsh', 'SHAFT', 'BUSHING','INTAKE');
     SX_Logfile('v',{'PREprocessing completed. Elapsed time: %.2f s ',toc(PREtime)});
     
     % ================================================================

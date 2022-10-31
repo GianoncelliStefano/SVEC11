@@ -151,7 +151,36 @@ function CALL_SVEC_M135A
         
         %% INLET/OUTLET DUCTS PARAMETERS %%
         % Creation of the INLET structure containing all the perameters useful for the inlet duct charachterization
-        %INLET.
+        
+        % INTAKE VALVE SELECTION %      
+        % Available intake valve:
+        % Intake valves
+        % ||  'RB60'  | 'RB115' |  'RC50'  |  'RBC120'  |  'RH38'  |  'RH70'  || 
+        % ||  'RB80'  | 'RB140' |  'RC95'  |  'RBC160'  |  'RH50'  |  '    '  || 
+        % ||  'RB90'  | 'RB200' |  'RBC90' |  'RH30'    |  'RH60'  |  '    '  || 
+        
+        Intake_valve_selected   = 'RC50';
+
+        if strcmp(Intake_valve_selected,'UserDefined')
+            INTAKE.aQ      =  106320;
+            INTAKE.bQ     = -1537.7;
+            INTAKE.cQ      =  1.5604;
+            
+        else
+            [INTAKE,fOK]      = SX_DatabaseLoad('Intake',Intake_valve_selected,fOK);
+        end
+
+        INTAKE.IntakeValve_name   = Intake_valve_selected;
+        clear Intake_valve_selected
+        % INTAKE DUCT SELECTION %     
+        INTAKE.pipe   = "standard";               %'standard' or 'corrugated'
+        INTAKE.cpitch  = 0.012;                    %corrugated pitch [m]
+        INTAKE.ct      = 0.006;                    %corrugation height [m] 
+        INTAKE.lenght = 1.200;               %pipe length [m]
+        INTAKE.D_i    = 0.170;                    %diameter at pipe's start [m]
+        INTAKE.D_f    = 0.114;                    %diameter at pipe's end [m]
+        INTAKE.roughness    = 12.50;                    %roughness [micro-m]    
+       
         % Creation of the OUTLET structure containing all the perameters useful for the outlet duct charachterization
         %OUTLET.
         
@@ -378,7 +407,7 @@ function CALL_SVEC_M135A
         %% RUN SIMULATION %%
         % in case of new simulation, preprocessing and main are called
         if fOK
-            SVECpreProc(IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, VANE, NOZZLES, STRESS, STRESSsh, SHAFT, BUSHING);
+            SVECpreProc(IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, VANE, NOZZLES, STRESS, STRESSsh, SHAFT, BUSHING, INTAKE);
         end
 
         % ================================================================

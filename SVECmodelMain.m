@@ -29,7 +29,8 @@
     SX_v2struct(STRESSsh);
     SX_v2struct(SHAFT);
     SX_v2struct(BUSHING);
-    
+    SX_v2struct(INTAKE);
+
     % ================================================================
     % ================================================================
     % Addition of new structuresas input for SVECpreProc
@@ -94,7 +95,7 @@
         [V_suc,V_dis,V_comp] = S2_VolumeSplit (V_cell,pos_SucClose,pos_DisOpen,Npt_cell);
     end
     %% SINLET- INLET DUCT+PORT MODEL %%
-    if fOK, [p_suc,T_suc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v);
+    if fOK, [p_suc,T_suc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_i,D_f,roughness)
     end
 
       

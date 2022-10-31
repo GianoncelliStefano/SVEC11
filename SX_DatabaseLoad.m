@@ -39,6 +39,16 @@ function [structLOAD,fOK] = SX_DatabaseLoad (type,selection,fOK)
                     SX_Logfile ('w',{lastwarn});
                 end, clear MATTEISTDdb
 
+            case 'Intake'
+                load ('DBintake.mat')
+                if isfield(INTAKEdb,selection)
+                    structLOAD = INTAKEdb.(selection);
+                else
+                    warning('DatabaseLoad:selection','Unknown value of Intake_valve_selected');
+                    SX_Logfile ('w',{lastwarn});
+                    structLOAD = [];   fOK = 0;
+                end, clear INTAKEdb
+
             case 'Gas'
                 load ('DBgas.mat')
                 if isfield(GASdb,selection)
