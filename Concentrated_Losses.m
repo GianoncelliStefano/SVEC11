@@ -31,9 +31,9 @@ if fb == 1                                          %forward --> pressure loss |
    coeffDP = 1;
 elseif fb == 2
    coeffDP = -1;
-else
-   warning('S0_Concentrated_Losses','Wrong number inserted for fb, please insert 1 for forward computing or 2 for backward computing')
-   SX_Logfile ('v',{lastwarn});
+% else
+%    warning('S0_Concentrated_Losses','Wrong number inserted for fb, please insert 1 for forward computing or 2 for backward computing')
+%    SX_Logfile ('v',{lastwarn});
 end
 
 %% Concentrated Losses Computing %%

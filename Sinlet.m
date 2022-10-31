@@ -1,4 +1,4 @@
-function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp, MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_i,D_f,roughness)
+function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp, MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_i,D_f,roughness,mu_g)
 % This function set up the iterative approach useful for the evaluation of
 %the real temperature and pressures in the inlet of the air-end section 
 %or the true beggining of the compression/expansion process
@@ -38,15 +38,19 @@ function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_com
  Loopinlet=1;
  toll_d=1e-6;
  fb=1;
-coeff=[aQ,bQ,cQ];
-mastseries=[0];
-counter=0;
+ coeff=[aQ,bQ,cQ];
+ mastseries=[0];
+ counter=0;
 
  while Loopinlet
 
 [p_f,T_f,rho_f,delta_p] = Concentrated_Losses(fb,coeff,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake valve pressure drop
 
+[p_f,T_f,rho_f,delta_p] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_i,D_f,roughness,p_f,T_f,m_gas_guess,MM_g,gamma,mu_g);
+
 [m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_f , T_f , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
+
+
 
 mast = Pout*V_comp(1)/(R_g*Tout)*c*n_van*rpm/60;
 mastseries=[mastseries , mast];

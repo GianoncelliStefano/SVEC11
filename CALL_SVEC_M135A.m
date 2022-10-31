@@ -173,13 +173,13 @@ function CALL_SVEC_M135A
         INTAKE.IntakeValve_name   = Intake_valve_selected;
         clear Intake_valve_selected
         % INTAKE DUCT SELECTION %     
-        INTAKE.pipe   = "standard";               %'standard' or 'corrugated'
+        INTAKE.pipe   = "corrugated";              %'standard' or 'corrugated'
         INTAKE.cpitch  = 0.012;                    %corrugated pitch [m]
         INTAKE.ct      = 0.006;                    %corrugation height [m] 
-        INTAKE.lenght = 1.200;               %pipe length [m]
-        INTAKE.D_i    = 0.170;                    %diameter at pipe's start [m]
-        INTAKE.D_f    = 0.114;                    %diameter at pipe's end [m]
-        INTAKE.roughness    = 12.50;                    %roughness [micro-m]    
+        INTAKE.lenght = 1.200;                     %pipe length [m]
+        INTAKE.D_i    = 0.170;                     %diameter at pipe's start [m]
+        INTAKE.D_f    = 0.114;                     %diameter at pipe's end [m]
+        INTAKE.roughness    = 12.50;               %roughness [micro-m]    
        
         % Creation of the OUTLET structure containing all the perameters useful for the outlet duct charachterization
         %OUTLET.
