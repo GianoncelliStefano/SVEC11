@@ -43,11 +43,11 @@ function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_com
  mastseries=[0];
  while Loopinlet
 
-[p_f,T_f,rho_f,delta_p1] = Concentrated_Losses(fb,coeff_filter,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake valve pressure drop
+[p_f,T_f,rho_f,delta_p1] = Concentrated_Losses(fb,coeff_filter,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake filter pressure drop
 
 [p_f,T_f,rho_f,delta_p2] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_f,T_f,m_gas_guess,MM_g,gamma,mu_g);
 
-[p_f,T_f,rho_f,delta_p3] = Concentrated_Losses(fb,coeff_valve,m_gas_guess,p_f,T_f,MM_g,gamma);  %intake filter pressure drop
+[p_f,T_f,rho_f,delta_p3] = Concentrated_Losses(fb,coeff_valve,m_gas_guess,p_f,T_f,MM_g,gamma);  %intake valve pressure drop
 
 [m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_f , T_f , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
 
@@ -68,5 +68,5 @@ else
     m_gas_guess= (m_gas_guess)*(1-alfa);
 end
  end
-%  deltap=[delta_p1 , delta_p2 , delta_p3]
+ deltap=[delta_p1 , delta_p2 , delta_p3]
 end 

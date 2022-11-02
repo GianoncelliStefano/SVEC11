@@ -176,11 +176,11 @@ function CALL_SVEC_M135A
         % INTAKE FILTER SELECTION %      
         % Available intake filter:
         % Intake valves
-        % ||  ''  | '' |  ''  |  ''  |  ''  |  ''  || 
-        % ||  ''  | '' |  ''  |  ''  |  ''  |  '    '  || 
-        % ||  ''  | '' |  '' |  ''    |  ''  |  '    '  || 
+        % ||  'AG05AAX024_1'  | 'AG05AAX025'        |  ''  |  ''  |  ''  |  ''  || 
+        % ||  'AG05AAX024_2'  | 'AG05AAX022'        |  ''  |  ''  |  ''  |  ''  || 
+        % ||  'AG05AAX024_3'  | 'FPG082505_B080067' |  ''  |  ''  |  ''  |  ''  || 
         
-        Intake_filter_selected   = 'D080069';
+        Intake_filter_selected   = 'FPG082505_B080067';
 
         if strcmp(Intake_filter_selected,'UserDefined')
             INTAKE.dQ      =  106320;
