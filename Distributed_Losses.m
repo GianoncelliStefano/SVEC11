@@ -41,7 +41,12 @@ elseif fb == 2
 end
 
 %% Distributed losses and friction coefficient computing %%
-if D_up == D_do
+if L == 0
+    p_f     = p_i;
+    T_f     = T_i;
+    rho_f   = rho_i;
+    delta_p = 0;
+elseif D_up == D_do
     Re = 4*m_flow/(mu_g*pi*D_up);
     if pipe == 'standard'
        f = Darcy_TkaMil(Re,D_up,eps);

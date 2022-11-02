@@ -68,5 +68,5 @@ else
     m_gas_guess= (m_gas_guess)*(1-alfa);
 end
  end
- deltap=[delta_p1 , delta_p2 , delta_p3]
+%  deltap=[delta_p1 , delta_p2 , delta_p3]
 end 
