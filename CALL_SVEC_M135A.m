@@ -199,13 +199,13 @@ function CALL_SVEC_M135A
 
 
         % INTAKE DUCT SELECTION %     
-        INTAKE.pipe   = "corrugated";              %'standard' or 'corrugated'
-        INTAKE.cpitch  = 0.012;                    %corrugated pitch [m]
-        INTAKE.ct      = 0.006;                    %corrugation height [m] 
-        INTAKE.lenght = 1.200;                     %pipe length [m]
-        INTAKE.D_i    = 0.170;                     %diameter at pipe's start [m]
-        INTAKE.D_f    = 0.114;                     %diameter at pipe's end [m]
-        INTAKE.roughness    = 12.50;               %roughness [micro-m]    
+        INTAKE.pipe       = "corrugated";              %"standard" or "corrugated"
+        INTAKE.cpitch     = 0.012;                     %corrugated pitch [m]
+        INTAKE.ct         = 0.006;                     %corrugation height [m] 
+        INTAKE.lenght     = 1.200;                     %pipe length [m]
+        INTAKE.D_up       = 0.170;                     %diameter at pipe's start (upstream side) [m]
+        INTAKE.D_do       = 0.114;                     %diameter at pipe's end (downstream side) [m]
+        INTAKE.roughness  = 12.50;                     %roughness [micro-m]    
        
         % Creation of the OUTLET structure containing all the perameters useful for the outlet duct charachterization
         %OUTLET.

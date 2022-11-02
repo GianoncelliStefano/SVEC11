@@ -1,4 +1,4 @@
-function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp, MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_i,D_f,roughness,mu_g,dQ,eQ,fQ)
+function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp, MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,dQ,eQ,fQ)
 % This function set up the iterative approach useful for the evaluation of
 %the real temperature and pressures in the inlet of the air-end section 
 %or the true beggining of the compression/expansion process
@@ -45,7 +45,7 @@ function [ Psuc , Tsuc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_com
 
 [p_f,T_f,rho_f,delta_p1] = Concentrated_Losses(fb,coeff_filter,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake valve pressure drop
 
-[p_f,T_f,rho_f,delta_p2] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_i,D_f,roughness,p_f,T_f,m_gas_guess,MM_g,gamma,mu_g);
+[p_f,T_f,rho_f,delta_p2] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_f,T_f,m_gas_guess,MM_g,gamma,mu_g);
 
 [p_f,T_f,rho_f,delta_p3] = Concentrated_Losses(fb,coeff_valve,m_gas_guess,p_f,T_f,MM_g,gamma);  %intake filter pressure drop
 

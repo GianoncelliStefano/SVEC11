@@ -123,7 +123,7 @@ end
 function [f] = Darcy_Kauder(Re,D,t,s)
 %For corrugated pipes
 %Darcy friction coefficient - Kauder
-%Validity conditions: ((t/D_up) >= 0.0455) && ((t/D_up) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6)
+%Validity conditions: ((t/D_up) >= 0.0455) && ((t/D_i) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6)
 f = 4 * exp(6.75 + 4.13 * log(t/D) + (230*((t/D)^2.1)-0.7) * log(t/s) + 0.193*exp(-3300*((t/D)^2.6)*(t/s)) * log(Re)); 
 end
 
