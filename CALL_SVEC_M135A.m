@@ -156,8 +156,8 @@ function CALL_SVEC_M135A
         % Available intake valve:
         % Intake valves
         % ||  'RB60'  | 'RB115' |  'RC50'  |  'RBC120'  |  'RH38'  |  'RH70'  || 
-        % ||  'RB80'  | 'RB140' |  'RC95'  |  'RBC160'  |  'RH50'  |  '    '  || 
-        % ||  'RB90'  | 'RB200' |  'RBC90' |  'RH30'    |  'RH60'  |  '    '  || 
+        % ||  'RB80'  | 'RB140' |  'RC95'  |  'RBC160'  |  'RH50'  |  'C40'   || 
+        % ||  'RB90'  | 'RB200' |  'RBC90' |  'RH30'    |  'RH60'  |  'C90'   || 
         
         Intake_valve_selected   = 'RC50';
 
