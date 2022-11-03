@@ -8,8 +8,8 @@ function [p_f,T_f,rho_f,delta_p] = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,M
 % m_flow  [kg/s]       :mass flow rate at the element
 % p_i     [Pa]         :pressure boundary condition
 % T_i     [K]          :temperature boundary condition
-% MM_g    [kg/mol]     :molar mass of gas 
-% gamma   [-]          :cp/cv
+% MM_g  [kg/mol]       : molar mass of gas 
+% gamma 
 %
 % OUTPUT
 % 

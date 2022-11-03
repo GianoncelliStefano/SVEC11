@@ -14,8 +14,9 @@ function [p_f,T_f,rho_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,ep
 % p_i     [Pa]          :pressure boundary condition
 % T_i     [K]           :temperature boundary condition
 % m_flow  [kg/s]        :mass flow rate along the pipe
-% GAS                   :structure containing gas properties
-% fOK                   :error flag
+% MM_g    [kg/mol]      :molar mass of gas 
+% gamma   [-]           :cp/cv
+% mu_g    [Pa s]        :gas dynamic viscosity
 %
 % OUTPUT
 % p_f     [Pa]          :resulting pressure

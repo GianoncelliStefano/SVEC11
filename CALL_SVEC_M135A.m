@@ -25,11 +25,11 @@ function CALL_SVEC_M135A
 
     if IO.fMODE         % New simulation
         %% FLAG %%
-        FLAG.fDBG = 1;      % Controls                  0: User only      1: User + Developer
-        FLAG.fSTR = 0;      % Stress Analysis;          0: Disable        1: Enable
-        FLAG.fLKG = 1;      % Leakages                  0: Disable        1: Enable
-        FLAG.fLKG_in = 1;   % Leakages path 2 and 3     0: Disable        1: Enable
-        FLAG.fLKG_plot =0;  % plot Leakages             0: Disable        1: Enable
+        FLAG.fDBG      = 1;      % Controls                  0: User only      1: User + Developer
+        FLAG.fSTR      = 0;      % Stress Analysis;          0: Disable        1: Enable
+        FLAG.fLKG      = 1;      % Leakages                  0: Disable        1: Enable
+        FLAG.fLKG_in   = 1;      % Leakages path 2 and 3     0: Disable        1: Enable
+        FLAG.fLKG_plot = 0;      % plot Leakages             0: Disable        1: Enable
 
         %% NUMERIC %%
         NUMERIC.Npt_i   = 10000;   % [-]  Number of grid discetization points     (Reccomended MIN: 10000 MAX: 100000)

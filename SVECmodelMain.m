@@ -96,7 +96,7 @@
     end
 
     %% SINLET- INLET DUCT+PORT MODEL %%
-    if fOK, [p_suc,T_suc] = Sinlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,dQ,eQ,fQ);
+    if fOK, [p_suc,T_suc] = S2BIS_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,dQ,eQ,fQ);
     end
 
       

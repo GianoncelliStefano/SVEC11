@@ -10,10 +10,10 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 % d [m]               : rotor diameter
 % d_hub [m]           : shaft diameter
 % L [m]               : rotor length
-% BI [m]            : real vane excursion measured on vane axis
-% s [m]             : vane thickness
+% BI [m]              : real vane excursion measured on vane axis
+% s [m]               : vane thickness
 % RSclr [m]           : rotor-stator clearance width
-% VSclr [m]         : vane-end-plate clearance size
+% VSclr [m]           : vane-end-plate clearance size
 % TgAngle [rad]       : rotor-stator tangency angle
 % NOZZLES             : structure of nozzles data
 % rho_ref [kg/m3]     : reference density for lubricating oil
@@ -45,8 +45,8 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 % toll_d [-]          : discretization tolerance
 % Gamma [rad]         : cell angular aperture
 % c [-]               : geometry index
-%   1                     : circular stator
-%   2                     : elliptical stator
+%   1                 : circular stator
+%   2                 : elliptical stator
 % n_van [-]           : number of vanes
 % rpm [rpm]           : shaft angular speed
 % model_g             : thermodynamic model - 'simple' : simplified thermodynamics | 'full': full thermodynamics
@@ -54,7 +54,7 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 % name4prop           : name of fluid used for real gas thermodynamic property computetion
 % molcomp_g           : gas molar composition (expressed as molar fraction of each component)
 % propSource          : source for gas properties - 'direct' : ThermoPhysProps | 'REFPROP': link to REFPROP
-% MUmodel_RS [string]    : viscosity model for two-phase gas-liquid mixtures
+% MUmodel_RS [string] : viscosity model for two-phase gas-liquid mixtures
 % MUmodel_VS [string] : viscosity model for two-phase gas-liquid mixture
 % RSmodel [string]    : leakage model for rotor-stator clearance
 % VSmodel [string]    : vane-end-plate leakage model
