@@ -81,6 +81,6 @@ else
 end
  end
  
- deltap = [delta_p1 , delta_p2 , delta_p3, (Pout - p_f)]
+ deltap = [delta_p1 , delta_p2 , delta_p3, (p_f - Pout) , Pout]
  
 end 
