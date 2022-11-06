@@ -159,7 +159,7 @@ function CALL_SVEC_M135A
         % ||  'RB80'  | 'RB140' |  'RC95'  |  'RBC160'  |  'RH50'  |  'C40'   || 
         % ||  'RB90'  | 'RB200' |  'RBC90' |  'RH30'    |  'RH60'  |  'C90'   || 
         
-        Intake_valve_selected   = 'RC50';
+        Intake_valve_selected   = 'RH60';
 
         if strcmp(Intake_valve_selected,'UserDefined')
             INTAKE.aQ      =  106320;
@@ -199,12 +199,12 @@ function CALL_SVEC_M135A
 
 
         % INTAKE DUCT SELECTION (insert L = 0 in case the duct is not present) %     
-        INTAKE.pipe       = "corrugated";              %"standard" or "corrugated"
-        INTAKE.cpitch     = 0.012;                     %corrugated pitch [m]
-        INTAKE.ct         = 0.006;                     %corrugation height [m] 
+        INTAKE.pipe       = "standard";                %"standard" or "corrugated"
+        INTAKE.cpitch     = 0.010;                     %corrugated pitch [m]
+        INTAKE.ct         = 0.009;                     %corrugation height [m] 
         INTAKE.lenght     = 1.000;                     %pipe length [m] 
-        INTAKE.D_up       = 0.170;                     %diameter at pipe's start (upstream side) [m]
-        INTAKE.D_do       = 0.114;                     %diameter at pipe's end (downstream side) [m]
+        INTAKE.D_up       = 0.102;                     %diameter at pipe's start (upstream side) [m]
+        INTAKE.D_do       = 0.102;                     %diameter at pipe's end (downstream side) [m]
         INTAKE.roughness  = 12.50;                     %roughness [micro-m]    
        
         % Creation of the OUTLET structure containing all the perameters useful for the outlet duct charachterization
