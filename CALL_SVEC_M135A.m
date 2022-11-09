@@ -151,6 +151,24 @@ function CALL_SVEC_M135A
         
         %% INLET/OUTLET DUCTS PARAMETERS %%
         % Creation of the INLET structure containing all the parameters useful for the inlet duct charachterization
+ 
+        % INTAKE FILTER SELECTION %      
+        % Available intake filter:
+        % Intake valves
+        % ||  'AG05AAX024_1'  | 'AG05AAX025'        |  ''  |  ''  |  ''  |  ''  || 
+        % ||  'AG05AAX024_2'  | 'AG05AAX022'        |  ''  |  ''  |  ''  |  ''  || 
+        % ||  'AG05AAX024_3'  | 'FPG082505_B080067' |  ''  |  ''  |  ''  |  ''  || 
+        
+        Intake_filter_selected   = 'FPG082505_B080067';
+
+        if strcmp(Intake_filter_selected,'UserDefined')
+            INTAKE.coeff_infilter      =  [106320,-1537.7,1.5604] ;     
+        else
+            [INTAKE.coeff_infilter,fOK]   = SX_DatabaseLoad('Intake',Intake_filter_selected,fOK);
+        end
+
+        INTAKE.IntakeFilter_name   = Intake_filter_selected;
+        clear Intake_filter_selected FILTER
         
         % INTAKE VALVE SELECTION %      
         % Available intake valve:
@@ -169,26 +187,6 @@ function CALL_SVEC_M135A
 
         INTAKE.IntakeValve_name   = Intake_valve_selected;
         clear Intake_valve_selected
-
-        % INTAKE FILTER SELECTION %      
-        % Available intake filter:
-        % Intake valves
-        % ||  'AG05AAX024_1'  | 'AG05AAX025'        |  ''  |  ''  |  ''  |  ''  || 
-        % ||  'AG05AAX024_2'  | 'AG05AAX022'        |  ''  |  ''  |  ''  |  ''  || 
-        % ||  'AG05AAX024_3'  | 'FPG082505_B080067' |  ''  |  ''  |  ''  |  ''  || 
-        
-        Intake_filter_selected   = 'FPG082505_B080067';
-
-        if strcmp(Intake_filter_selected,'UserDefined')
-            INTAKE.coeff_infilter      =  [106320,-1537.7,1.5604] ;     
-        else
-            [FILTER,fOK]   = SX_DatabaseLoad('Intake',Intake_filter_selected,fOK);
-            INTAKE.coeff_infilter = FILTER;
-        end
-
-        INTAKE.IntakeFilter_name   = Intake_filter_selected;
-        clear Intake_filter_selected FILTER
-
 
         % INTAKE DUCT SELECTION (insert L = 0 in case the duct is not present) %     
         INTAKE.pipe       = "standard";                %"standard" or "corrugated"
