@@ -27,7 +27,6 @@ function [p_f,T_f,rho_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,ep
 % Developers: Genoni-Gianoncelli
 
 %% Starting Conditions %%
-eps    = eps * 10^-6;
 R_u    = 8.314472;           
 rho_i  = p_i*MM_g/(R_u*T_i);     
 

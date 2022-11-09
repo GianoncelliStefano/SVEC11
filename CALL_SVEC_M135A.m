@@ -172,13 +172,13 @@ function CALL_SVEC_M135A
         clear Intake_filter_selected FILTER
         
         % INTAKE DUCT SELECTION (insert L = 0 in case the duct is not present) %     
-        INTAKE.pipe       = "standard";                %"standard" or "corrugated"
-        INTAKE.lenght     = 1.000;                     %pipe length [m] 
-        INTAKE.D_up       = 0.102;                     %diameter at pipe's start (upstream side) [m]
-        INTAKE.D_do       = 0.102;                     %diameter at pipe's end (downstream side) [m]
-        INTAKE.roughness  = 12.50;                     %roughness [micro-m]    
-        INTAKE.cpitch     = 0.010;                     %corrugated pitch [m]
-        INTAKE.ct         = 0.009;                     %corrugation height [m]
+        INTAKE.pipe       = "standard";               %"standard" or "corrugated"
+        INTAKE.lenght     = 1000;                     %pipe length [mm] 
+        INTAKE.D_up       = 102;                      %diameter at pipe's start (upstream side) [mm]
+        INTAKE.D_do       = 102;                      %diameter at pipe's end (downstream side) [mm]
+        INTAKE.roughness  = 12.50;                    %roughness [micro-mm]    
+        INTAKE.cpitch     = 10;                       %corrugated pitch [mm]
+        INTAKE.ct         = 9;                        %corrugation height [mm]
         
         % INTAKE VALVE SELECTION %      
         % Available intake valve:

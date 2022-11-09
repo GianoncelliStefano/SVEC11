@@ -20,6 +20,7 @@ function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, V
 % VANE      : Structure of vane parameters
 % NOZZLES   : Structure of nozzles parameters
 % STRESS    : Structure of stress parameters
+% INTAKE    : Structure of intake variables
 % =======================================================================
 % =======================================================================
 % STRESSsh  : Structure of shaft stress parameters
@@ -106,6 +107,15 @@ function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, V
     
     end, clear c
     
+    if FLAG.fSDP
+    % Intake struct
+       INTAKE.lenght     = INTAKE.lenght*1e-3;                    %pipe length [m] 
+       INTAKE.D_up       = INTAKE.D_up*1e-3;                      %diameter at pipe's start (upstream side) [m]
+       INTAKE.D_do       = INTAKE.D_do*1e-3;                      %diameter at pipe's end (downstream side) [m]
+       INTAKE.roughness  = INTAKE.roughness*1e-6;                 %roughness [m]    
+       INTAKE.cpitch     = INTAKE.cpitch*1e-3;                    %corrugated pitch [m]
+       INTAKE.ct         = INTAKE.ct*1e-3;                        %corrugation height [m]
+    end
     
     % Gas struct
     GAS.MM_g = GAS.MM_g*1e-3;  % [kg/kmol -> kg/mol] gas molar mass
