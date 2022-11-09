@@ -56,7 +56,7 @@ elseif D_up == D_do
          if ((t/D_up) >= 0.0455) && ((t/D_up) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6) 
            f = Darcy_Kauder(Re,D_up,t,s);
          elseif 273.15 < T_i < 313.15  
-           f = Darcy_HawHelmes(D_up,s);
+           f = Darcy_HawHelmes(D_up,s,t);
          else
              warning('S0_Distributed_Losses','Select a coherent model for corrugated pipe')
              SX_Logfile ('v',{lastwarn});
@@ -80,7 +80,7 @@ else %Changing section along pipe's axial direction
         if 0.0455 <= t/D_up <= 0.0635 && 0.2 <= t/s <= 0.6
             f = Darcy_Kauder(Re,D_mean,t,s);
         elseif 273.15 < T_i < 313.15
-            f = Darcy_HawHelmes(D_mean,s);
+            f = Darcy_HawHelmes(D_mean,s,t);
         else
             warning('S0_Distributed_Losses','Select a coherent model for corrugated pipe')
             SX_Logfile ('v',{lastwarn});
@@ -139,11 +139,12 @@ function [f] = Darcy_Kauder(Re,D,t,s)
 f = 4 * exp(6.75 + 4.13 * log(t/D) + (230*((t/D)^2.1)-0.7) * log(t/s) + 0.193*exp(-3300*((t/D)^2.6)*(t/s)) * log(Re)); 
 end
 
-function [f] = Darcy_HawHelmes(D,s)
+function [f] = Darcy_HawHelmes(D,s,t)
 %For corrugated pipes
 %Darcy friction coefficient - Hawthorne and Von Helmes 
-%Valid for air and water at ambient temperature 
-f = (D/s)*(1-(D/(D + 0.438*s))^2)^2;       
+%Valid for air and water at ambient temperature
+d = D - 2*t; %internal diameter
+f = (d/s)*(1-(d/(d + 0.438*s))^2)^2;       
 end
 
 
