@@ -95,10 +95,10 @@
         [V_suc,V_dis,V_comp] = S2_VolumeSplit (V_cell,pos_SucClose,pos_DisOpen,Npt_cell);
     end
 
-    %% SINLET- INLET DUCT+PORT MODEL %%
+    %% S3PRE - INLET DUCT+PORT MODEL %%
     % Inlet process model. Set fSDP to 0 for air-end only computation
     if fSDP
-     if fOK, [p_suc,T_suc] = S2BIS_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter);
+     if fOK, [p_suc,T_suc] = S3PRE_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter);
      end
     end
     
@@ -112,10 +112,10 @@
     if fOK, [p_out,p_cell,p_1,p_2,p_geom] = S3_Pressure(theta,theta_vane,p_comp,pos_SucClose,pos_DisOpen,Npt_cell,p_del);
     end
 
-%       %% SOUTLET - OUTLET DUCT+PORT MODEL %%
+%       %% S3POST - OUTLET DUCT+PORT MODEL %%
 %   Outlet process model. Set fSDP to 0 for air-end only computation
 %   if fSDP
-%     if fOK, [p_u,T_u] = Soutlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
+%     if fOK, [p_u,T_u] = S3POST_outlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
 %     end
 %   end
 

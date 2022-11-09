@@ -1,4 +1,4 @@
-function [ Pout , Tout] = Soutlet( Pin , Tin , OUTport_Amax, OUTport_Amin,mgas, MM_g,c_v, Pgeom )
+function [ Pout , Tout] = S3POST_outlet( Pin , Tin , OUTport_Amax, OUTport_Amin,mgas, MM_g,c_v, Pgeom )
 % This function set up the iterative approach useful for the evaluation of
 %the real temperature and pressures in the inlet of the air-end section 
 %or the true beggining of the compression/expansion process
