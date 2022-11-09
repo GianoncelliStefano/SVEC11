@@ -1,4 +1,4 @@
-function [Psuc,Tsuc] = S2BIS_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM_g,n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,dQ,eQ,fQ)
+function [Psuc,Tsuc] = S2BIS_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM_g,n_van,rpm,c,toll_d,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter)
 % This function set up the iterative approach useful for the evaluation of
 %the real temperature and pressures in the inlet of the air-end section 
 %or the true begining of the compression/expansion process
@@ -50,16 +50,14 @@ function [Psuc,Tsuc] = S2BIS_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM
  Loopinlet=1;
  toll_d=1e-6;
  fb=1;
- coeff_valve=[aQ,bQ,cQ];
- coeff_filter=[dQ,eQ,fQ];
  mastseries=[0];
  while Loopinlet
 
-[p_f,T_f,rho_f,delta_p1] = Concentrated_Losses(fb,coeff_filter,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake filter pressure drop
+[p_f,T_f,rho_f,delta_p1] = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake filter pressure drop
 
 [p_f,T_f,rho_f,delta_p2] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_f,T_f,m_gas_guess,MM_g,gamma,mu_g);
 
-[p_f,T_f,rho_f,delta_p3] = Concentrated_Losses(fb,coeff_valve,m_gas_guess,p_f,T_f,MM_g,gamma);  %intake valve pressure drop
+[p_f,T_f,rho_f,delta_p3] = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_f,T_f,MM_g,gamma);  %intake valve pressure drop
 
 [m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_f , T_f , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
 

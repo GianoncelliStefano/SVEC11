@@ -135,8 +135,8 @@ function CALL_SVEC_M135A
                     GEOMETRY.INport_Amax = 2;      % [mm^2] Intlet port maximum passage area 
                     GEOMETRY.OUTport_Amin= 1;      % [mm^2] Outlet port minimum passage area
                     GEOMETRY.OUTport_Amax= 2;      % [mm^2] Outlet port maximum passage area
-                    GEOMETRY.VSclr = 225;          % [micron] vane-end-plate clearance size
-                    GEOMETRY.PEclr = 225;          % [micron] rotor-end-plate clearance size
+                    GEOMETRY.VSclr       = 225;    % [micron] vane-end-plate clearance size
+                    GEOMETRY.PEclr       = 225;    % [micron] rotor-end-plate clearance size
                 otherwise
                     warning('CALL_SVECmodelMain:Logic','Invalid value of GEOMETRY.c');
                     SX_Logfile ('e',{lastwarn});
@@ -162,12 +162,9 @@ function CALL_SVEC_M135A
         Intake_valve_selected   = 'RH60';
 
         if strcmp(Intake_valve_selected,'UserDefined')
-            INTAKE.aQ      =  106320;
-            INTAKE.bQ      = -1537.7;
-            INTAKE.cQ      =  1.5604;
-            
+            INTAKE.coeff_invalve      =  [106320 , -1537.7, 1.5604] ;
         else
-            [INTAKE,fOK]      = SX_DatabaseLoad('Intake',Intake_valve_selected,fOK);
+            [INTAKE.coeff_invalve,fOK]      = SX_DatabaseLoad('Intake',Intake_valve_selected,fOK);
         end
 
         INTAKE.IntakeValve_name   = Intake_valve_selected;
@@ -183,15 +180,10 @@ function CALL_SVEC_M135A
         Intake_filter_selected   = 'FPG082505_B080067';
 
         if strcmp(Intake_filter_selected,'UserDefined')
-            INTAKE.dQ      =  106320;
-            INTAKE.eQ      = -1537.7;
-            INTAKE.fQ      =  1.5604;
-            
+            INTAKE.coeff_infilter      =  [106320,-1537.7,1.5604] ;     
         else
             [FILTER,fOK]   = SX_DatabaseLoad('Intake',Intake_filter_selected,fOK);
-            INTAKE.dQ = FILTER.dQ;
-            INTAKE.eQ = FILTER.eQ;
-            INTAKE.fQ = FILTER.fQ;
+            INTAKE.coeff_infilter = FILTER;
         end
 
         INTAKE.IntakeFilter_name   = Intake_filter_selected;
