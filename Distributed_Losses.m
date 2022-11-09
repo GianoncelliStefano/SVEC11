@@ -1,4 +1,4 @@
-function [p_f,T_f,rho_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,T_i,m_flow,MM_g,gamma,mu_g)
+function [p_f,T_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,T_i,m_flow,MM_g,gamma,mu_g)
 % This function computes distributed pressure losses, temperature and
 % density along a pipe 
 % 

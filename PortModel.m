@@ -1,4 +1,4 @@
-function [m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(Pin , Tin , Amax , Amin, gamma, Rgas,  m, port_type)
+function [ Pout , Tout] = PortModel(Pin , Tin , Amax , Amin, gamma, Rgas,  m, port_type)
 % This function evaluate with a simplified approach the gas-dynamic 
 % effects happening in correspondance of the inlet and outlet ports.
 % The mean fluid velocity at steady state will be computed along with 

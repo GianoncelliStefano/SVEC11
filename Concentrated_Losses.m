@@ -1,4 +1,4 @@
-function [p_f,T_f,rho_f,delta_p] = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,gamma)
+function [p_f,T_f,delta_p] = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,gamma)
 % This function computes concentrated pressure losses, temperature and
 % density across a flow disturbing element
 %

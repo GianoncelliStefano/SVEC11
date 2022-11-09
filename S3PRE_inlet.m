@@ -1,4 +1,4 @@
-function [p_in,T_in] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM_g,n_van,rpm,c,toll_d,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter)
+function [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter)
 % This function set up the iterative approach useful for the evaluation of
 %the real temperature and pressures in the inlet of the air-end section 
 %or the true begining of the compression/expansion process
@@ -16,7 +16,6 @@ function [p_in,T_in] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM
 % c [-]               : geometry index
 %   1                 : circular stator
 %   2                 : elliptical stator
-% toll_d [-]          : discretization tolerance
 % c_v [J/kgK]         : gas specific heat at constant volume
 % aQ [kg/m^7]         : pressure loss quadratic coefficient 
 % bQ [kg/m^4]         : pressure loss quadratic coefficient
@@ -42,31 +41,30 @@ function [p_in,T_in] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM
 
  %% DEFINITIONS %%
  
- port_type="inlet";
- R_g        = SX_Constant({'UniGasConstant'})/MM_g;          % specific gas constant [J/ kg K];
- gamma= (c_v + R_g)/c_v;                                     % cp/cv
- m_gas_guess = p_suc*V_comp(1)/(R_g*T_suc)*c*n_van*rpm/60;   % guessed mass flow rate for first iteration 
- alfa=0.00001;                                               % loop variable
- Loopinlet=1;
- toll_d=1e-6;
- fb=1;
- mastseries=[0];
+ port_type   = "inlet";
+ R_g         = SX_Constant({'UniGasConstant'})/MM_g;          % specific gas constant [J/ kg K];
+ gamma       = (c_v + R_g)/c_v;                               % heat capacity ratio
+ m_gas_guess = p_suc*V_comp(1)/(R_g*T_suc)*c*n_van*rpm/60;    % guessed mass flow rate for first iteration 
+ alfa        = 0.00001;                                       % under-relaxation factor for the inlet loop
+ Loopinlet   = 1;                                             % loop control variable 
+ toll_d      = 1e-6;                                          % mass flow rate tolerance for the loop
+ fb          = 1;                                             % flag for forward computation of pressure losses
+ 
  while Loopinlet
 
-[p_f,T_f,rho_f,delta_p1] = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);  %intake filter pressure drop
+[p_df,T_df,delta_p1] = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);                            % intake filter concentrated pressure drop
 
-[p_f,T_f,rho_f,delta_p2] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_f,T_f,m_gas_guess,MM_g,gamma,mu_g);
+[p_dp,T_dp,delta_p2] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_df,T_df,m_gas_guess,MM_g,gamma,mu_g); % intake duct distributed pressure drop
 
-[p_f,T_f,rho_f,delta_p3] = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_f,T_f,MM_g,gamma);  %intake valve pressure drop
+[p_dv,T_dv,delta_p3] = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                 % intake valve concentrated pressure drop
 
-[m_port_inf , Uinf , Pinf ,Tinf, Pout , Tout] = PortModel(p_f , T_f , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);
+[Pout , Tout] = PortModel(p_dv , T_dv , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);                     % inlet port pressure drop
+
+mast = Pout*V_comp(1)/(R_g*Tout)*c*n_van*rpm/60;   % updated mass flow rate                                                                           
 
 
-mast = Pout*V_comp(1)/(R_g*Tout)*c*n_van*rpm/60;
-mastseries=[mastseries , mast];
-
-err= abs(mast-m_gas_guess);
-checkloop = err<toll_d;
+err= abs(mast-m_gas_guess);                        % residual error on the control variable
+checkloop = err < toll_d;                          % loop exit condition 
 
 
 if  checkloop
@@ -79,6 +77,7 @@ else
 end
  end
  
- deltap = [delta_p1 , delta_p2 , delta_p3, (p_f - Pout) , Pout]
- 
+ deltap_inlet = delta_p1 + delta_p2 + delta_p3 +  (p_dv - Pout);
+ deltap = [delta_p1 , delta_p2 , delta_p3, p_dv - Pout, Pout]
+  
 end 
