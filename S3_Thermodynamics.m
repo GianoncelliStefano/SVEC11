@@ -116,8 +116,8 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
     t_comp          = (theta_f-theta_i)/omega;               % duration of the compression process [s]
     dt              = t_comp/Npt_comp;                       % time step [s]
     dt_vano         = Gamma/omega;                           % time needed for a vane to sweep a cell [s]
-    dt_angle_dis  = angle_dis/omega;                         % A closed cell see discharge port for this amount of time [s]
-    dt_angle_suc  = angle_suc/omega + dt_vano;               % A closed cell see suction port for this amount of time(include both phase I and phase II in suction, see S3_LeakagePE) [s]
+    dt_angle_dis    = angle_dis/omega;                         % A closed cell see discharge port for this amount of time [s]
+    dt_angle_suc    = angle_suc/omega + dt_vano;               % A closed cell see suction port for this amount of time(include both phase I and phase II in suction, see S3_LeakagePE) [s]
   
     % Thermodynamics
     R_g        = SX_Constant({'UniGasConstant'})/MM_g;  % specific gas constant [J/ kg K]
