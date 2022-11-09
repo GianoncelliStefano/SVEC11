@@ -1,7 +1,7 @@
 function [Psuc,Tsuc] = S2BIS_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM_g,n_van,rpm,c,toll_d,c_v,aQ,bQ,cQ,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,dQ,eQ,fQ)
 % This function set up the iterative approach useful for the evaluation of
 %the real temperature and pressures in the inlet of the air-end section 
-%or the true beggining of the compression/expansion process
+%or the true begining of the compression/expansion process
 %
 % INPUT
 % P_suc [Pa]          : suction pressure at the begginning of the inlet duct
