@@ -163,9 +163,9 @@ function CALL_SVEC_M135A
         Intake_filter_selected   = 'FPG082505_B080067';
 
         if strcmp(Intake_filter_selected,'UserDefined')
-            INTAKE.coeff_infilter      =  [106320,-1537.7,1.5604] ;     
+            INTAKE.coeff_infilter        =  [106320,-1537.7,1.5604] ;     
         else
-            [INTAKE.coeff_infilter,fOK]   = SX_DatabaseLoad('Intake',Intake_filter_selected,fOK);
+            [INTAKE.coeff_infilter,fOK]  = SX_DatabaseLoad('Intake',Intake_filter_selected,fOK);
         end
 
         INTAKE.IntakeFilter_name   = Intake_filter_selected;
@@ -176,7 +176,7 @@ function CALL_SVEC_M135A
         INTAKE.lenght     = 1000;                     %pipe length [mm] 
         INTAKE.D_up       = 102;                      %diameter at pipe's start (upstream side) [mm]
         INTAKE.D_do       = 102;                      %diameter at pipe's end (downstream side) [mm]
-        INTAKE.roughness  = 12.50;                    %roughness [micro-mm]    
+        INTAKE.roughness  = 12.5;                     %roughness [micron]    
         INTAKE.cpitch     = 10;                       %corrugated pitch [mm]
         INTAKE.ct         = 9;                        %corrugation height [mm]
         
@@ -190,9 +190,9 @@ function CALL_SVEC_M135A
         Intake_valve_selected   = 'RH60';
 
         if strcmp(Intake_valve_selected,'UserDefined')
-            INTAKE.coeff_invalve      =  [106320 , -1537.7, 1.5604] ;
+            INTAKE.coeff_invalve       =  [106320 , -1537.7, 1.5604] ;
         else
-            [INTAKE.coeff_invalve,fOK]      = SX_DatabaseLoad('Intake',Intake_valve_selected,fOK);
+            [INTAKE.coeff_invalve,fOK] = SX_DatabaseLoad('Intake',Intake_valve_selected,fOK);
         end
 
         INTAKE.IntakeValve_name   = Intake_valve_selected;
