@@ -96,10 +96,12 @@
     end
 
     %% SINLET- INLET DUCT+PORT MODEL %%
-    if fOK, [p_suc,T_suc] = S2BIS_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter);
+    % Inlet process model. Set fSDP to 0 for air-end only computation
+    if fSDP
+     if fOK, [p_suc,T_suc] = S2BIS_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,toll_d,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter);
+     end
     end
-
-      
+    
     %% S3 - THERMODYNAMICS %%
     % Computation of pressure and temperature during closed-cell process
     if fOK, [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_suction,Q_g_PE_closed_cell,Q_g_VS_closed_cell,Fleak_g,Fleak_g_PE_suc,Fleak_g_VS_suc,Fleak_g_PE_cell_closed,Fleak_g_VS_cell_closed,m_g,q_gas_Id,q_gas,T_l,T_g,T_mix,T_lmean,p_comp,rho_o,nu_o,sigma_o,m_inj_nzl,V_inj_nzl,V_inj_cls,epsm,W_cell,n_pltr,Dg,fg,cls_indx,M,m_gas_Id,m_gas,m_liq_Id,m_liq,Q_th,R_g,fOK,theta_vane,theta_SucOpen,theta_SucClose,theta_DisOpen,theta_DisClose,Flow_RS,Flow_VS,Flow_PE] ...
@@ -111,8 +113,11 @@
     end
 
 %       %% SOUTLET - OUTLET DUCT+PORT MODEL %%
+%   Outlet process model. Set fSDP to 0 for air-end only computation
+%   if fSDP
 %     if fOK, [p_u,T_u] = Soutlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
 %     end
+%   end
 
     %% S4 - MECHANICS %%
     if c == 1

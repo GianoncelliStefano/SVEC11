@@ -58,7 +58,7 @@ function [fOK] = S1_InputCheck(IO,FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LEAK, V
     %% FLAG INPUT CHECK %%
     f1  = FLAG.fDBG ~= 0 && FLAG.fDBG ~= 1;
     f2  = FLAG.fSTR ~= 0 && FLAG.fSTR ~= 1;
-    
+    f3  = FLAG.fSDP ~= 0 && FLAG.fSDP ~= 1;
     if f1
         warning('S1_InputCheck:FLAG','Unknown value of FLAG.fDBG. FLAG variables can either be 0 or 1');
         SX_Logfile ('e',{lastwarn});
@@ -69,7 +69,12 @@ function [fOK] = S1_InputCheck(IO,FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LEAK, V
         SX_Logfile ('e',{lastwarn});
         fOK = 0;
     end
-    clear f1 f2
+    if f3
+        warning('S1_InputCheck:FLAG','Unknown value of FLAG.fSDP. FLAG variables can either be 0 or 1');
+        SX_Logfile ('e',{lastwarn});
+        fOK = 0;
+    end
+    clear f1 f2 f3
     
     %% NUMERIC INPUT CHECK %%
     % =====================================================================

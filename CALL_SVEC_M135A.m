@@ -25,11 +25,12 @@ function CALL_SVEC_M135A
 
     if IO.fMODE         % New simulation
         %% FLAG %%
-        FLAG.fDBG      = 1;      % Controls                  0: User only      1: User + Developer
-        FLAG.fSTR      = 0;      % Stress Analysis;          0: Disable        1: Enable
-        FLAG.fLKG      = 1;      % Leakages                  0: Disable        1: Enable
-        FLAG.fLKG_in   = 1;      % Leakages path 2 and 3     0: Disable        1: Enable
-        FLAG.fLKG_plot = 0;      % plot Leakages             0: Disable        1: Enable
+        FLAG.fDBG      = 1;      % Controls                   0: User only      1: User + Developer
+        FLAG.fSTR      = 0;      % Stress analysis            0: Disable        1: Enable
+        FLAG.fSDP      = 0;      % Suction&Discharge model    0: Disable        1: Enable 
+        FLAG.fLKG      = 1;      % Leakages                   0: Disable        1: Enable
+        FLAG.fLKG_in   = 1;      % Leakages path 2 and 3      0: Disable        1: Enable
+        FLAG.fLKG_plot = 0;      % Plot leakages              0: Disable        1: Enable
 
         %% NUMERIC %%
         NUMERIC.Npt_i   = 10000;   % [-]  Number of grid discetization points     (Reccomended MIN: 10000 MAX: 100000)
@@ -170,6 +171,15 @@ function CALL_SVEC_M135A
         INTAKE.IntakeFilter_name   = Intake_filter_selected;
         clear Intake_filter_selected FILTER
         
+        % INTAKE DUCT SELECTION (insert L = 0 in case the duct is not present) %     
+        INTAKE.pipe       = "standard";                %"standard" or "corrugated"
+        INTAKE.lenght     = 1.000;                     %pipe length [m] 
+        INTAKE.D_up       = 0.102;                     %diameter at pipe's start (upstream side) [m]
+        INTAKE.D_do       = 0.102;                     %diameter at pipe's end (downstream side) [m]
+        INTAKE.roughness  = 12.50;                     %roughness [micro-m]    
+        INTAKE.cpitch     = 0.010;                     %corrugated pitch [m]
+        INTAKE.ct         = 0.009;                     %corrugation height [m]
+        
         % INTAKE VALVE SELECTION %      
         % Available intake valve:
         % Intake valves
@@ -188,15 +198,6 @@ function CALL_SVEC_M135A
         INTAKE.IntakeValve_name   = Intake_valve_selected;
         clear Intake_valve_selected
 
-        % INTAKE DUCT SELECTION (insert L = 0 in case the duct is not present) %     
-        INTAKE.pipe       = "standard";                %"standard" or "corrugated"
-        INTAKE.cpitch     = 0.010;                     %corrugated pitch [m]
-        INTAKE.ct         = 0.009;                     %corrugation height [m] 
-        INTAKE.lenght     = 1.000;                     %pipe length [m] 
-        INTAKE.D_up       = 0.102;                     %diameter at pipe's start (upstream side) [m]
-        INTAKE.D_do       = 0.102;                     %diameter at pipe's end (downstream side) [m]
-        INTAKE.roughness  = 12.50;                     %roughness [micro-m]    
-       
         % Creation of the OUTLET structure containing all the perameters useful for the outlet duct charachterization
         %OUTLET.
         
