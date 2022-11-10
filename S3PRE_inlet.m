@@ -59,11 +59,11 @@ function [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_A
  
  while Loopinlet
 
-[p_df,T_df,delta_p1] = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);                            % intake filter concentrated pressure drop
+[p_df,T_df,delta_pfilter] = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);                            % intake filter concentrated pressure drop
 
-[p_dp,T_dp,delta_p2] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_df,T_df,m_gas_guess,MM_g,gamma,mu_g); % intake duct distributed pressure drop
+[p_dp,T_dp,delta_pduct] = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_df,T_df,m_gas_guess,MM_g,gamma,mu_g); % intake duct distributed pressure drop
 
-[p_dv,T_dv,delta_p3] = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                 % intake valve concentrated pressure drop
+[p_dv,T_dv,delta_pvalve] = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                 % intake valve concentrated pressure drop
 
 [Pout , Tout] = PortModel(p_dv , T_dv , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);                     % inlet port pressure drop
 
@@ -84,8 +84,8 @@ else
 end
  end
  
- deltap_inlet = delta_p1 + delta_p2 + delta_p3 +  (p_dv - Pout);
- deltap = [delta_p1 , delta_p2 , delta_p3, p_dv - Pout, Pout]
+ deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  (p_dv - Pout);
+ deltap = [delta_pfilter , delta_pduct , delta_pvalve, p_dv - Pout, Pout]
 
  end
 
