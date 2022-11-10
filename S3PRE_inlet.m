@@ -79,8 +79,9 @@ end
  deltap       = [delta_pfilter , delta_pduct , delta_pvalve, p_dv - Pout, Pout]  % intake process partial pressure loss on each component
 
  end
+end
 
- %% INTERNAL FUNCTIONS  %%
+%% INTERNAL FUNCTIONS  %%
 
 function [p_f,T_f,delta_p] = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,gamma)
 % This function computes concentrated pressure losses and temperature variation across a flow disturbing element
@@ -103,7 +104,7 @@ function [p_f,T_f,delta_p] = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,ga
 % Developers: Genoni-Gianoncelli
 
 %% Starting Conditions %%
-R_u    = 8.314472;                                  % universal gas constant [J/mol K]
+R_u    = SX_Constant({'UniGasConstant'});           % universal gas constant [J/mol K]
 rho_i  = p_i*MM_g/(R_u*T_i);                        % density at element beginning [kg/m3]
 Q      = m_flow/rho_i;                              % volumetric flow rate [m3/s]
 
@@ -120,10 +121,10 @@ p_f = p_i - delta_p*coeffDP;
 T_f = T_i * (p_f/p_i)^((gamma-1)/gamma);            %HP: adiabatic element
 %rho_f = p_f*MM_g/(R_u*T_f);
 
-end
+ end
 function [p_f,T_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,T_i,m_flow,MM_g,gamma,mu_g)
-% This function computes distributed pressure losses, temperature and
-% density along a pipe 
+% This function computes returns pressure, temperature and distributed
+% pressure losses along a pipe
 % 
 % INPUT
 % fb      [-]           :if 1 -> forward operation, if 2 -> backward operation
@@ -149,8 +150,8 @@ function [p_f,T_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,
 % Developers: Genoni-Gianoncelli
 
 %% Starting Conditions %%
-R_u    = 8.314472;                 % universal gas constant [J/mol K] 
-rho_i  = p_i*MM_g/(R_u*T_i);       % density at pipe beginning [kg/m3]
+R_u    = SX_Constant({'UniGasConstant'});                 % universal gas constant [J/mol K] 
+rho_i  = p_i*MM_g/(R_u*T_i);                              % density at pipe beginning [kg/m3]
 
 %% Forward or Backward Process %%
 if fb == 1                         %forward -> pressure loss | backward -> pressure gain 
@@ -262,6 +263,7 @@ function [f] = Darcy_HawHelmes(D,s,t)
 d = D - 2*t; %internal diameter
 f = (d/s)*(1-(d/(d + 0.438*s))^2)^2;       
 end
+
 end
 function [Pout,Tout]       = PortModel(Pin,Tin,Amax,Amin,gamma,Rgas,m,port_type)
 % This function evaluates, with a simplified approach, the gas-dynamic 
@@ -270,28 +272,32 @@ function [Pout,Tout]       = PortModel(Pin,Tin,Amax,Amin,gamma,Rgas,m,port_type)
 % the steady state pressure in the middle of the port itself
 %
 % INPUT
-% Pin: Input pressure[Pa] to the port model i.e. the known one which is:
-%       - The UPSTREAM one in the inlet port case
-%       - The DOWNSTREAM one in the outlet port case
-% Tin: Input temperature [K] to the port model  i.e. the known one which is: 
-%      - The UPSTREAM one in the inlet port case
-%      - The DOWNSTREAM one in the outlet port case
-% Amax: Maximum port area [m^2]
-% Amin: Minimum port area [m^2]
-% gamma: Specific heat ratio [-]
-% Rgas: Specific gas costant [J/kgK]
-% m: mass flow rate first guess (case inlet port) or mass flow rate value(in the case of outlet port) 
-% port_type: Flag useful to access the correct model depending on the port
-% type (inlet or outlet) 
+% Pin        [Pa]     : Input pressure to the port model i.e. the known one which is:
+%                       - The UPSTREAM one in the inlet port case
+%                       - The DOWNSTREAM one in the outlet port case
+% Tin        [K]      : Input temperature  to the port model  i.e. the known one which is: 
+%                       - The UPSTREAM one in the inlet port case
+%                       - The DOWNSTREAM one in the outlet port case
+% Amax       [m^2]    : Maximum port area 
+% Amin       [m^2]    : Minimum port area 
+% gamma      [-]      : Specific heat ratio 
+% Rgas       [J/kgK]  : Specific gas costant 
+% m          [kg/s]   : mass flow rate first guess (case inlet port) or mass flow rate value (in the case of outlet port) 
+% port_type  [-]      : Flag useful to access the correct model depending on the port type (inlet or outlet) 
 % 
 % OUTPUT
-% Pout: Output pressure [Pa] to the port model i.e the unknown one which is: 
-%       - The UPSTREAM one in the inlet port case
-%       - The DOWNSTREAM one in the outlet port case
-% Tout: Output temperature [Pa] from the port model i.e the unknown one which is: 
-%       - The UPSTREAM one in the inlet port case
-%       - The DOWNSTREAM one in the outlet port case
+% Pout       [Pa]     : Output pressure to the port model i.e the unknown one which is: 
+%                       - The UPSTREAM one in the inlet port case
+%                       - The DOWNSTREAM one in the outlet port case
+% Tout       [Pa]     : Output temperature from the port model i.e the unknown one which is: 
+%                       - The UPSTREAM one in the inlet port case
+%                       - The DOWNSTREAM one in the outlet port case
 % 
+% ADDITIONAL
+% m_port_inf [kg/s]   : fluid mass flow rate passing through the port once steady state is reached 
+% Uinf       [m/s]    : Velocity of the fluid in the middle point of the port once steady state is reached 
+% Pinf       [Pa]     : Pressure of the fluid in the port middle point once steady state is reached 
+% Tinf       [Pa]     : Temperature of the fluid in the port middle point once steady state is reached 
 % 
 % NOTE : Model based on the paper "Theoretical modeling and experimental investigations for the improvement
 % of the mechanical efficiency in sliding vane rotary compressors" by G. Bianchi and R. Cipollone
@@ -311,8 +317,6 @@ switch port_type
 end
 
 m_port_inf = Pinf*Uinf*Amean/(Rgas*Tinf);       %steady state mass flow rate [kg/s]  
-
-
 
 %% MODEL SOLUTION AT STEADY STATE %%
 function [Pss,Tss,Uss,Pd,Td] = Inlet_PortModel(P,T,Xi,Amean,gamma,R,m)
@@ -334,6 +338,6 @@ Uss=((2*gamma*R*Tu)/(gamma-1)*Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(1/2);
 Pss=Pu*(1-Xi^2*(1-(P/Pu)^((gamma-1)/gamma)))^(gamma/(gamma-1));
 Tss=Tu*(Pss/Pu)^((gamma-1)/gamma);
 end
-end 
 
 end 
+ 

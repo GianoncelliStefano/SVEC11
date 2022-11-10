@@ -27,7 +27,7 @@ function CALL_SVEC_M135A
         %% FLAG %%
         FLAG.fDBG      = 1;      % Controls                   0: User only      1: User + Developer
         FLAG.fSTR      = 0;      % Stress Analysis            0: Disable        1: Enable
-        FLAG.fSDP      = 0;      % Suction&Discharge Model    0: Disable        1: Enable 
+        FLAG.fSDP      = 1;      % Suction&Discharge Model    0: Disable        1: Enable 
         FLAG.fLKG      = 1;      % Leakages                   0: Disable        1: Enable
         FLAG.fLKG_in   = 1;      % Leakages Path 2 and 3      0: Disable        1: Enable
         FLAG.fLKG_plot = 0;      % Plot Leakages              0: Disable        1: Enable
@@ -111,8 +111,8 @@ function CALL_SVEC_M135A
                     GEOMETRY.r_tip       = 9;               % [mm] vane tip radius
                     GEOMETRY.TgAngle     = 0;               % [°]  sealing arc between stator and rotor
                     GEOMETRY.RSclr       = 50;              % [micron] clearance between rotor and stator
-                    GEOMETRY.INport_Amin = 11309.73;        % [mm^2] Inlet port minimum passage area 
-                    GEOMETRY.INport_Amax = 5654.866;        % [mm^2] Intlet port maximum passage area 
+                    GEOMETRY.INport_Amin = 5654.866;        % [mm^2] Inlet port minimum passage area 
+                    GEOMETRY.INport_Amax = 11309.73;        % [mm^2] Intlet port maximum passage area 
                     GEOMETRY.OUTport_Amin= 1;               % [mm^2] Outlet port minimum passage area
                     GEOMETRY.OUTport_Amax= 2;               % [mm^2] Outlet port maximum passage area
                     GEOMETRY.VSclr = 225;                   % [micron] vane-end-plate clearance size

@@ -1,0 +1,50 @@
+===========================================================
+	TIME		TYPE		MESSAGE
+===========================================================
+
+10/11/2022 16:54:24	EVENT	 LogFile created
+				 In SX_Logfile (line 49)
+				 In SX_Startup (line 64)
+				 In CALL_SVEC_M135A (line 24)
+
+10/11/2022 16:54:24	EVENT	 PREprocessing started
+				 In SVECpreProc (line 39)
+				 In CALL_SVEC_M135A (line 426)
+
+10/11/2022 16:54:24	EVENT	 Nozzles number [1 2 4 5] have been deactivated, according to user input
+				 In SVECpreProc (line 167)
+				 In CALL_SVEC_M135A (line 426)
+
+10/11/2022 16:54:24	EVENT	 PREprocessing completed. Elapsed time: 0.02 s 
+				 In SVECpreProc (line 201)
+				 In CALL_SVEC_M135A (line 426)
+
+10/11/2022 16:54:24	EVENT	 SVECmodelMAIN started
+				 In SVECmodelMain (line 13)
+				 In CALL_SVEC_M135A (line 436)
+
+10/11/2022 16:54:24	EVENT	 Number of discretization points changed. Discretization points currently used : 10004 
+				 In S2_Discretization (line 35)
+				 In SVECmodelMain (line 45)
+				 In CALL_SVEC_M135A (line 436)
+
+10/11/2022 16:54:27	WARNING	 Indicated power do not match. Estimated relative error: 6.3506 %
+				 In S5_MechPower (line 29)
+				 In SVECmodelMain (line 170)
+				 In CALL_SVEC_M135A (line 436)
+
+10/11/2022 16:54:27	EVENT	 SVECmodelMAIN completed. Elapsed time: 2.93 s 
+				 In SVECmodelMain (line 235)
+				 In CALL_SVEC_M135A (line 436)
+
+10/11/2022 16:54:27	EVENT	 POSTprocessing started
+				 In SVECpostProc (line 15)
+				 In CALL_SVEC_M135A (line 442)
+
+10/11/2022 16:54:27	EVENT	 POSTprocessing completed. Elapsed time: 0.04 s 
+				 In SVECpostProc (line 83)
+				 In CALL_SVEC_M135A (line 442)
+
+10/11/2022 16:54:27	EVENT	 CALL_SVEC_M135A completed. Elapsed time: 3.03 s 
+				 In CALL_SVEC_M135A (line 446)
+
