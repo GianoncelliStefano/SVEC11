@@ -1,4 +1,4 @@
-function [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter)
+function [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP)
 % This function set up the iterative approach useful for the evaluation of
 %the real temperature and pressures in the inlet of the air-end section 
 %or the true begining of the compression/expansion process
@@ -31,6 +31,7 @@ function [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_A
 % dQ [kg/m^7]         : pressure loss quadratic coefficient
 % eQ [kg/m^4]         : pressure loss quadratic coefficient
 % fQ [Pa]             : pressure loss quadratic coefficient
+% fSDP                : suction and discharge model activation flag
 %
 % OUTPUT
 % P_suc [Pa]          : real suction pressure at the begginning of the compression process (inlet of the air-end)
@@ -39,6 +40,12 @@ function [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_A
 % HISTORY:  Gianoncelli_Genoni: creation of the file, see thesis for
 % further information
 
+ %% fSDP flag check %%
+ switch fSDP
+     case 0 
+         p_in = p_suc;
+         T_in = T_suc;
+     case 1
  %% DEFINITIONS %%
  
  port_type   = "inlet";
@@ -79,5 +86,7 @@ end
  
  deltap_inlet = delta_p1 + delta_p2 + delta_p3 +  (p_dv - Pout);
  deltap = [delta_p1 , delta_p2 , delta_p3, p_dv - Pout, Pout]
-  
+
+ end
+
 end 

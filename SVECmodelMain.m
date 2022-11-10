@@ -97,13 +97,9 @@
 
     %% S3PRE - INLET DUCT+PORT MODEL %%
     % Inlet process model. Set fSDP to 0 for air-end only computation
-    if fSDP
-     if fOK, [p_in,T_in] = S3PRE_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter);
+    
+     if fOK, [p_in,T_in] = S3PRE_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP);
      end
-    else
-        p_in = p_suc;
-        T_in = T_suc;
-    end
     
     %% S3 - THERMODYNAMICS %%
     % Computation of pressure and temperature during closed-cell process
