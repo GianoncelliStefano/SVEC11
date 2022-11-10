@@ -107,7 +107,7 @@ function [fOK] = S1_InputCheck(IO,FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LEAK, V
     end
     
     %% GEOMETRY INPUT CHECK %%
-    if GEOMETRY.c==1    % circular geometry
+    if GEOMETRY.c == 1                                              % circular geometry
         f1 = GEOMETRY.d > GEOMETRY.D;                               % rotor diameter must be less then stator diameter
         f2 = GEOMETRY.r_tip < 0;                                    % tip radius must be positive
         f3 = GEOMETRY.r_tip < 0.5*GEOMETRY.s + abs(GEOMETRY.b);     % limit condition for tip radius
@@ -139,7 +139,7 @@ function [fOK] = S1_InputCheck(IO,FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LEAK, V
             fOK = 0;
         end
 
-    elseif GEOMETRY.c==2 % elliptical
+    elseif GEOMETRY.c == 2                    % elliptical
         f6 = GEOMETRY.e <0 || GEOMETRY.e >1;  % eccentricity must be between 0 and 1
         f7 = GEOMETRY.l > GEOMETRY.d;         % vane height must be less than rotor diameter
 
@@ -202,8 +202,24 @@ function [fOK] = S1_InputCheck(IO,FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LEAK, V
         fOK = 0;
     end
     
-    clear f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14
-
+    % check suction and discharge port areas 
+    f16 = GEOMETRY.INport_Amax  < GEOMETRY.INport_Amin;
+    f17 = GEOMETRY.OUTport_Amax < GEOMETRY.OUTport_Amin;
+    
+    if f16
+        warning('S1_InputCheck:GEOMETRY','Inlet port maximum area is intended to be larger than the minimum area');
+        SX_Logfile ('e',{lastwarn});
+        fOK = 0;
+    end
+    
+    if f17
+        warning('S1_InputCheck:GEOMETRY','Outlet port maximum area is intended to be larger than the minimum area');
+        SX_Logfile ('e',{lastwarn});
+        fOK = 0;
+    end
+    
+    clear f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16 f17
+    
     %% GAS INPUT CHECK %%
     f1 = abs(sum(GAS.molcomp_g)-1)>NUMERIC.toll_d;                               % sum of molar fraction must be one
     f2 = ~strcmp(GAS.model_g, 'simple') && ~strcmp(GAS.model_g,'full');          % model selection is limited

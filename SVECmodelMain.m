@@ -1,11 +1,12 @@
  function [fOK] = SVECmodelMain(IO)
 % This function is divided in 6 section:
-% Section S1: take input from structure memorised in CALL_SVECmodelMain and perform input checking and conversion
-% Section S2: solve geometric model
-% Section S3: solve thermodynamic model
-% Section S4: solve dynamic model
-% Section S5: solve efficiency and power
-% Section S6: solve internal actions model
+% Section S1    : take input from structure memorised in CALL_SVECmodelMain and perform input checking and conversion
+% Section S2    : solve geometric model
+% Section S3PRE : solve intake model   
+% Section S3    : solve thermodynamic model
+% Section S4    : solve dynamic model
+% Section S5    : solve efficiency and power
+% Section S6    : solve internal actions model
 
     %% PREAMBLE %%
     MAINtime = tic;
@@ -13,7 +14,7 @@
     load  (IO.fullloadname);                   % load input structures
     
     %% S1 - INPUT CHECK & UNPACKING %%
-    [fOK] = S1_InputCheck(IO,FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LEAK, VANE, NOZZLES);
+    [fOK] = S1_InputCheck(IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LEAK, VANE, NOZZLES);
     
    
     % Unpack variables
@@ -95,11 +96,10 @@
         [V_suc,V_dis,V_comp] = S2_VolumeSplit (V_cell,pos_SucClose,pos_DisOpen,Npt_cell);
     end
 
-    %% S3PRE - INLET DUCT+PORT MODEL %%
+    %% S3PRE - INLET PROCESS + PORT MODEL %%
     % Inlet process model. Set fSDP to 0 for air-end only computation
-
-     if fOK, [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc , T_suc , INport_Amax, INport_Amin, V_comp(1), MM_g , n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP);
-     end
+    if fOK, [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp(1),MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP);
+    end
     
     %% S3 - THERMODYNAMICS %%
     % Computation of pressure and temperature during closed-cell process
@@ -111,12 +111,12 @@
     if fOK, [p_out,p_cell,p_1,p_2,p_geom] = S3_Pressure(theta,theta_vane,p_comp,pos_SucClose,pos_DisOpen,Npt_cell,p_del);
     end
 
-%       %% S3POST - OUTLET DUCT+PORT MODEL %%
-%   Outlet process model. Set fSDP to 0 for air-end only computation
-%   if fSDP
-%     if fOK, [p_u,T_u] = S3POST_outlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
+    %% S3POST - OUTLET DUCT+PORT MODEL %%
+%     Outlet process model. Set fSDP to 0 for air-end only computation
+%     if fSDP
+%       if fOK, [p_u,T_u] = S3POST_outlet(p_del , T_mix(end) , OUTport_Amax, OUTport_Amin,m_gas, MM_g, c_v, p_geom);
+%       end
 %     end
-%   end
 
     %% S4 - MECHANICS %%
     if c == 1

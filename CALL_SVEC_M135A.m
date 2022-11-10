@@ -26,11 +26,11 @@ function CALL_SVEC_M135A
     if IO.fMODE         % New simulation
         %% FLAG %%
         FLAG.fDBG      = 1;      % Controls                   0: User only      1: User + Developer
-        FLAG.fSTR      = 0;      % Stress analysis            0: Disable        1: Enable
-        FLAG.fSDP      = 1;      % Suction&Discharge model    0: Disable        1: Enable 
+        FLAG.fSTR      = 0;      % Stress Analysis            0: Disable        1: Enable
+        FLAG.fSDP      = 0;      % Suction&Discharge Model    0: Disable        1: Enable 
         FLAG.fLKG      = 1;      % Leakages                   0: Disable        1: Enable
-        FLAG.fLKG_in   = 1;      % Leakages path 2 and 3      0: Disable        1: Enable
-        FLAG.fLKG_plot = 0;      % Plot leakages              0: Disable        1: Enable
+        FLAG.fLKG_in   = 1;      % Leakages Path 2 and 3      0: Disable        1: Enable
+        FLAG.fLKG_plot = 0;      % Plot Leakages              0: Disable        1: Enable
 
         %% NUMERIC %%
         NUMERIC.Npt_i   = 10000;   % [-]  Number of grid discetization points     (Reccomended MIN: 10000 MAX: 100000)
@@ -55,11 +55,11 @@ function CALL_SVEC_M135A
         % Creation of PROCESS structure with operating conditions
         PROCESS.process = 1;        % [bool]  Process performed    1: compression        2: Expansion
         PROCESS.rpm     = 1500;     % [rpm]   Rotational speed
-        PROCESS.p_suc   = 1;     % [barA]  Suction pressure
-        PROCESS.p_del   = 8.5;        % [barA]  Delivery pressure - (use NaN for geometric pressure)
-        PROCESS.T_suc   = 28;     % [°C]    Gas inlet temperature
+        PROCESS.p_suc   = 1;        % [barA]  Suction pressure
+        PROCESS.p_del   = 8.5;      % [barA]  Delivery pressure - (use NaN for geometric pressure)
+        PROCESS.T_suc   = 28;       % [°C]    Gas inlet temperature
         PROCESS.T_0     = 20.0;     % [°C]    Reference temperature for energy balance
-        PROCESS.p_0     = 1;       % [barA]  Reference pressure
+        PROCESS.p_0     = 1;        % [barA]  Reference pressure
         PROCESS.f_b     = 0.008;    % [adim]  Bushing friction coefficient
         % ==================================================================
         % ==================================================================
@@ -93,51 +93,51 @@ function CALL_SVEC_M135A
 
             switch GEOMETRY.c
                 case 1   % cylindrical geometry
-                    GEOMETRY.StdProcess  = 1;      % [-]  design process for this machine  1: Compression   2: Expansion
-                    GEOMETRY.D           = 270;   % [mm] stator diameter
-                    GEOMETRY.d           = 226.12; % [mm] rotor diameter
-                    GEOMETRY.L           = 452.24; % [mm] rotor length
-                    GEOMETRY.l           = 66.5;   % [mm] vane height
-                    GEOMETRY.s           = 8;      % [mm] vane thickness (for s<toll_t, 1D vane geometry model is used)
-                    GEOMETRY.s_1D        = 3.96;   % [mm] vane thickness for 1D geometry
-                    GEOMETRY.n_van       = 7;      % [-]  number of vanes
-                    GEOMETRY.d_hub       = 81.17;  % [mm] bushing diameter
-                    GEOMETRY.th_SucOpen  = 48.5;   % [°]  suction opening angle
-                    GEOMETRY.th_SucClose = 161.6;  % [°]  suction close angle     (COMPRESSION: use NaN to use  maxize suction volume)
-                    GEOMETRY.th_DisOpen  = 325.3;  % [°]  delivery opening angle  (EXPANSION:   use NaN to maximize delivery volume)
-                    GEOMETRY.th_DisClose = 356.3;  % [°]  delivery closing angle
-                    GEOMETRY.th_tilt     = 0;      % [°]  vane tilt angle positive/null/negative for forward/radial/backward vanes
-                    GEOMETRY.b           = 0;      % [mm] offset between center of tip circonference and vane axis
-                    GEOMETRY.r_tip       = 9;      % [mm] vane tip radius
-                    GEOMETRY.TgAngle     = 0;      % [°]  sealing arc between stator and rotor
-                    GEOMETRY.RSclr       = 50;     % [micron] clearance between rotor and stator
-                    GEOMETRY.INport_Amin = 5654.866;      % [mm^2] Inlet port minimum passage area 
-                    GEOMETRY.INport_Amax = 11309.73;      % [mm^2] Intlet port maximum passage area 
-                    GEOMETRY.OUTport_Amin= 1;      % [mm^2] Outlet port minimum passage area
-                    GEOMETRY.OUTport_Amax= 2;      % [mm^2] Outlet port maximum passage area
-                    GEOMETRY.VSclr = 225;          % [micron] vane-end-plate clearance size
-                    GEOMETRY.PEclr = 225;          % [micron] rotor-end-plate clearance size
+                    GEOMETRY.StdProcess  = 1;               % [-]  design process for this machine  1: Compression   2: Expansion
+                    GEOMETRY.D           = 270;             % [mm] stator diameter
+                    GEOMETRY.d           = 226.12;          % [mm] rotor diameter
+                    GEOMETRY.L           = 452.24;          % [mm] rotor length
+                    GEOMETRY.l           = 66.5;            % [mm] vane height
+                    GEOMETRY.s           = 8;               % [mm] vane thickness (for s<toll_t, 1D vane geometry model is used)
+                    GEOMETRY.s_1D        = 3.96;            % [mm] vane thickness for 1D geometry
+                    GEOMETRY.n_van       = 7;               % [-]  number of vanes
+                    GEOMETRY.d_hub       = 81.17;           % [mm] bushing diameter
+                    GEOMETRY.th_SucOpen  = 48.5;            % [°]  suction opening angle
+                    GEOMETRY.th_SucClose = 161.6;           % [°]  suction close angle     (COMPRESSION: use NaN to use  maxize suction volume)
+                    GEOMETRY.th_DisOpen  = 325.3;           % [°]  delivery opening angle  (EXPANSION:   use NaN to maximize delivery volume)
+                    GEOMETRY.th_DisClose = 356.3;           % [°]  delivery closing angle
+                    GEOMETRY.th_tilt     = 0;               % [°]  vane tilt angle positive/null/negative for forward/radial/backward vanes
+                    GEOMETRY.b           = 0;               % [mm] offset between center of tip circonference and vane axis
+                    GEOMETRY.r_tip       = 9;               % [mm] vane tip radius
+                    GEOMETRY.TgAngle     = 0;               % [°]  sealing arc between stator and rotor
+                    GEOMETRY.RSclr       = 50;              % [micron] clearance between rotor and stator
+                    GEOMETRY.INport_Amin = 11309.73;        % [mm^2] Inlet port minimum passage area 
+                    GEOMETRY.INport_Amax = 5654.866;        % [mm^2] Intlet port maximum passage area 
+                    GEOMETRY.OUTport_Amin= 1;               % [mm^2] Outlet port minimum passage area
+                    GEOMETRY.OUTport_Amax= 2;               % [mm^2] Outlet port maximum passage area
+                    GEOMETRY.VSclr = 225;                   % [micron] vane-end-plate clearance size
+                    GEOMETRY.PEclr = 225;                   % [micron] rotor-end-plate clearance size
                 case 2  % elliptical geometry
-                    GEOMETRY.StdProcess  = 1;      % [-]  design process for this machine  1: Compression   2: Expansion
-                    GEOMETRY.d           = 111;    % [mm] rotor diameter
-                    GEOMETRY.e           = 0.6;    % [-]  ellipse eccentricity
-                    GEOMETRY.L           = 275;    % [mm] rotor length
-                    GEOMETRY.l           = 38;     % [mm] vane height
-                    GEOMETRY.s           = 4.72;   % [mm] vane thickness
-                    GEOMETRY.n_van       = 8;      % [-]  numebr of vanes
-                    GEOMETRY.d_hub       = 30;     % [mm] bushing diameter
-                    GEOMETRY.th_SucOpen  = 0;      % [°] suction opening angle
-                    GEOMETRY.th_SucClose = 65;     % [°] suction close angle     (COMPRESSION: use NaN to maxize suction volume)
-                    GEOMETRY.th_DisOpen  = 150;    % [°] delivery opening angle  (EXPANSION:   use NaN to maximize delivery volume)
-                    GEOMETRY.th_DisClose = 170;    % [°] delivery closing angle
-                    GEOMETRY.TgAngle     = 0;      % [°] sealing arc between stator and rotor (TgAngle = 0 if no socket is present)
-                    GEOMETRY.RSclr       = 50;     % [micron] clearance between rotor and stator
-                    GEOMETRY.INport_Amin = 1;      % [mm^2] Inlet port minimum passage area 
-                    GEOMETRY.INport_Amax = 2;      % [mm^2] Intlet port maximum passage area 
-                    GEOMETRY.OUTport_Amin= 1;      % [mm^2] Outlet port minimum passage area
-                    GEOMETRY.OUTport_Amax= 2;      % [mm^2] Outlet port maximum passage area
-                    GEOMETRY.VSclr       = 225;    % [micron] vane-end-plate clearance size
-                    GEOMETRY.PEclr       = 225;    % [micron] rotor-end-plate clearance size
+                    GEOMETRY.StdProcess  = 1;               % [-]  design process for this machine  1: Compression   2: Expansion
+                    GEOMETRY.d           = 111;             % [mm] rotor diameter
+                    GEOMETRY.e           = 0.6;             % [-]  ellipse eccentricity
+                    GEOMETRY.L           = 275;             % [mm] rotor length
+                    GEOMETRY.l           = 38;              % [mm] vane height
+                    GEOMETRY.s           = 4.72;            % [mm] vane thickness
+                    GEOMETRY.n_van       = 8;               % [-]  numebr of vanes
+                    GEOMETRY.d_hub       = 30;              % [mm] bushing diameter
+                    GEOMETRY.th_SucOpen  = 0;               % [°] suction opening angle
+                    GEOMETRY.th_SucClose = 65;              % [°] suction close angle     (COMPRESSION: use NaN to maxize suction volume)
+                    GEOMETRY.th_DisOpen  = 150;             % [°] delivery opening angle  (EXPANSION:   use NaN to maximize delivery volume)
+                    GEOMETRY.th_DisClose = 170;             % [°] delivery closing angle
+                    GEOMETRY.TgAngle     = 0;               % [°] sealing arc between stator and rotor (TgAngle = 0 if no socket is present)
+                    GEOMETRY.RSclr       = 50;              % [micron] clearance between rotor and stator
+                    GEOMETRY.INport_Amin = 5000;            % [mm^2] Inlet port minimum passage area 
+                    GEOMETRY.INport_Amax = 10000;           % [mm^2] Intlet port maximum passage area 
+                    GEOMETRY.OUTport_Amin= 5000;            % [mm^2] Outlet port minimum passage area
+                    GEOMETRY.OUTport_Amax= 10000;           % [mm^2] Outlet port maximum passage area
+                    GEOMETRY.VSclr       = 225;             % [micron] vane-end-plate clearance size
+                    GEOMETRY.PEclr       = 225;             % [micron] rotor-end-plate clearance size
                 otherwise
                     warning('CALL_SVECmodelMain:Logic','Invalid value of GEOMETRY.c');
                     SX_Logfile ('e',{lastwarn});
@@ -150,29 +150,32 @@ function CALL_SVEC_M135A
         GEOMETRY.machine_name = Machine_selected;
         clear Machine_selected
         
-        %% INLET/OUTLET DUCTS PARAMETERS %%
-        % Creation of the INLET structure containing all the parameters useful for the inlet duct charachterization
+        %% INLET-OUTLET GEOMETRY PARAMETERS %%
+        % Creation of the INLET structure containing all the useful parameters for intake process charachterization
+        % Filters and valves are characterized by a 3x1 array of quadratic coefficients [a b c] 
+        % Pressure losses are evaluated with delta_P [Pa] = a*Q^2 + b*Q + c with Q [m3/s] 
  
         % INTAKE FILTER SELECTION %      
-        % Available intake filter:
-        % Intake valves
-        % ||  'AG05AAX024_1'  | 'AG05AAX025'        |  ''  |  ''  |  ''  |  ''  || 
-        % ||  'AG05AAX024_2'  | 'AG05AAX022'        |  ''  |  ''  |  ''  |  ''  || 
-        % ||  'AG05AAX024_3'  | 'FPG082505_B080067' |  ''  |  ''  |  ''  |  ''  || 
+        % Available intake filters:
+        % ||  'AG05AAX024_1'  |     'AG05AAX025'    || 
+        % ||  'AG05AAX024_2'  |     'AG05AAX022'    || 
+        % ||  'AG05AAX024_3'  | 'FPG082505_B080067' || 
         
-        Intake_filter_selected   = 'FPG082505_B080067';
+        Intake_filter_selected = 'FPG082505_B080067';
 
         if strcmp(Intake_filter_selected,'UserDefined')
-            INTAKE.coeff_infilter        =  [106320,-1537.7,1.5604] ;     
+            INTAKE.coeff_infilter        =  [106320,-1537.7,1.5604];     
         else
             [INTAKE.coeff_infilter,fOK]  = SX_DatabaseLoad('Intake',Intake_filter_selected,fOK);
         end
 
-        INTAKE.IntakeFilter_name   = Intake_filter_selected;
+        INTAKE.IntakeFilter_name = Intake_filter_selected;
         clear Intake_filter_selected FILTER
         
-        % INTAKE DUCT SELECTION (insert L = 0 in case the duct is not present) %     
-        INTAKE.pipe       = "standard";               %"standard" or "corrugated"
+        % INTAKE DUCT PROPERTIES % 
+        % insert L = 0 in case the duct is not present
+        
+        INTAKE.pipe       = "corrugated";               %"standard" or "corrugated"
         INTAKE.lenght     = 1000;                     %pipe length [mm] 
         INTAKE.D_up       = 102;                      %diameter at pipe's start (upstream side) [mm]
         INTAKE.D_do       = 102;                      %diameter at pipe's end (downstream side) [mm]
@@ -181,25 +184,21 @@ function CALL_SVEC_M135A
         INTAKE.ct         = 9;                        %corrugation height [mm]
         
         % INTAKE VALVE SELECTION %      
-        % Available intake valve:
-        % Intake valves
-        % ||  'RB60'  | 'RB115' |  'RC50'  |  'RBC120'  |  'RH38'  |  'RH70'  || 
-        % ||  'RB80'  | 'RB140' |  'RC95'  |  'RBC160'  |  'RH50'  |  'C40'   || 
-        % ||  'RB90'  | 'RB200' |  'RBC90' |  'RH30'    |  'RH60'  |  'C90'   || 
+        % Available intake valves:
+        % ||  'RB60'  | 'RB115' |  'RC50'  |  'RBC120'  |  'RH38'  |  'RH70' || 
+        % ||  'RB80'  | 'RB140' |  'RC95'  |  'RBC160'  |  'RH50'  |  'C40'  || 
+        % ||  'RB90'  | 'RB200' |  'RBC90' |  'RH30'    |  'RH60'  |  'C90'  || 
         
-        Intake_valve_selected   = 'RH60';
+        Intake_valve_selected = 'RH60';
 
         if strcmp(Intake_valve_selected,'UserDefined')
-            INTAKE.coeff_invalve       =  [106320 , -1537.7, 1.5604] ;
+            INTAKE.coeff_invalve       =  [106320,-1537.7,1.5604];
         else
             [INTAKE.coeff_invalve,fOK] = SX_DatabaseLoad('Intake',Intake_valve_selected,fOK);
         end
 
-        INTAKE.IntakeValve_name   = Intake_valve_selected;
+        INTAKE.IntakeValve_name = Intake_valve_selected;
         clear Intake_valve_selected
-
-        % Creation of the OUTLET structure containing all the perameters useful for the outlet duct charachterization
-        %OUTLET.
         
         %% GAS %%
         % Creation of GAS structure: manual input (setting gas_selected = 'UserDefined')

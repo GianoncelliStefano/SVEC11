@@ -20,7 +20,7 @@ function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, V
 % VANE      : Structure of vane parameters
 % NOZZLES   : Structure of nozzles parameters
 % STRESS    : Structure of stress parameters
-% INTAKE    : Structure of intake variables
+% INTAKE    : Structure of intake model parameters
 % =======================================================================
 % =======================================================================
 % STRESSsh  : Structure of shaft stress parameters
@@ -64,64 +64,64 @@ function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, V
     % geometry struct
     c            = GEOMETRY.c;        % 0 circular stator;       1 elliptical stator;
     if c == 1
-        GEOMETRY.D           = GEOMETRY.D *1e-3;               % [mm -> m] stator diameter
-        GEOMETRY.d           = GEOMETRY.d *1e-3;               % [mm -> m] rotor diameter
-        GEOMETRY.L           = GEOMETRY.L *1e-3;               % [mm -> m] rotor length
-        GEOMETRY.l           = GEOMETRY.l *1e-3;               % [mm -> m] vane height
-        GEOMETRY.s           = GEOMETRY.s *1e-3;               % [mm -> m] vane thickness
-        GEOMETRY.s_1D        = GEOMETRY.s_1D *1e-3;            % [mm -> m] vane thickness for 1D geometry
-        GEOMETRY.d_hub       = GEOMETRY.d_hub *1e-3;           % [mm -> m] bushing diameter
-        GEOMETRY.th_SucOpen  = deg2rad(GEOMETRY.th_SucOpen);   % [deg -> rad] suction opening angle
-        GEOMETRY.th_SucClose = deg2rad(GEOMETRY.th_SucClose);  % [deg -> rad] suction close angle
-        GEOMETRY.th_DisOpen  = deg2rad(GEOMETRY.th_DisOpen);   % [deg -> rad] delivery opening angle
-        GEOMETRY.th_DisClose = deg2rad(GEOMETRY.th_DisClose);  % [deg -> rad] delivery closing angle
-        GEOMETRY.th_tilt     = deg2rad(GEOMETRY.th_tilt);      % [deg -> rad] vane tilt angle
-        GEOMETRY.b           = GEOMETRY.b *1e-3;               % [mm -> m] offset between center of tip circonference and vane axis
-        GEOMETRY.r_tip       = GEOMETRY.r_tip *1e-3;           % [mm -> m] vane tip radius
-        GEOMETRY.TgAngle     = deg2rad(GEOMETRY.TgAngle);      % [°]  sealing arc between stator and rotor
-        GEOMETRY.RSclr       = GEOMETRY.RSclr*1e-6;                        % [micron->m] clearance between rotor and stator
-        GEOMETRY.VSclr = GEOMETRY.VSclr*1e-6;                      % [micron->m] clearance between vane and end-plates
-        GEOMETRY.PEclr = GEOMETRY.PEclr*1e-6;                      % [micron->m] clearance between rotor and end-plates
-        GEOMETRY.INport_Amin =  GEOMETRY.INport_Amin*1e-6;    % [mm^2-->m^2] Inlet port minimum passage area 
-        GEOMETRY.INport_Amax =  GEOMETRY.INport_Amax*1e-6;     % [mm^2-->m^2] Inlet port maximum passage area 
-        GEOMETRY.OUTport_Amin=  GEOMETRY.OUTport_Amin*1e-6;     % [mm^2-->m^2] Outlet port minimum passage area
-        GEOMETRY.OUTport_Amax=  GEOMETRY.OUTport_Amax*1e-6;    % [mm^2-->m^2] Outlet port maximum passage area 
+        GEOMETRY.D            = GEOMETRY.D *1e-3;               % [mm -> m] stator diameter
+        GEOMETRY.d            = GEOMETRY.d *1e-3;               % [mm -> m] rotor diameter
+        GEOMETRY.L            = GEOMETRY.L *1e-3;               % [mm -> m] rotor length
+        GEOMETRY.l            = GEOMETRY.l *1e-3;               % [mm -> m] vane height
+        GEOMETRY.s            = GEOMETRY.s *1e-3;               % [mm -> m] vane thickness
+        GEOMETRY.s_1D         = GEOMETRY.s_1D *1e-3;            % [mm -> m] vane thickness for 1D geometry
+        GEOMETRY.d_hub        = GEOMETRY.d_hub *1e-3;           % [mm -> m] bushing diameter
+        GEOMETRY.th_SucOpen   = deg2rad(GEOMETRY.th_SucOpen);   % [deg -> rad] suction opening angle
+        GEOMETRY.th_SucClose  = deg2rad(GEOMETRY.th_SucClose);  % [deg -> rad] suction close angle
+        GEOMETRY.th_DisOpen   = deg2rad(GEOMETRY.th_DisOpen);   % [deg -> rad] delivery opening angle
+        GEOMETRY.th_DisClose  = deg2rad(GEOMETRY.th_DisClose);  % [deg -> rad] delivery closing angle
+        GEOMETRY.th_tilt      = deg2rad(GEOMETRY.th_tilt);      % [deg -> rad] vane tilt angle
+        GEOMETRY.b            = GEOMETRY.b *1e-3;               % [mm -> m] offset between center of tip circonference and vane axis
+        GEOMETRY.r_tip        = GEOMETRY.r_tip *1e-3;           % [mm -> m] vane tip radius
+        GEOMETRY.TgAngle      = deg2rad(GEOMETRY.TgAngle);      % [°]  sealing arc between stator and rotor
+        GEOMETRY.RSclr        = GEOMETRY.RSclr*1e-6;            % [micron->m] clearance between rotor and stator
+        GEOMETRY.VSclr        = GEOMETRY.VSclr*1e-6;            % [micron->m] clearance between vane and end-plates
+        GEOMETRY.PEclr        = GEOMETRY.PEclr*1e-6;            % [micron->m] clearance between rotor and end-plates
+        GEOMETRY.INport_Amin  =  GEOMETRY.INport_Amin*1e-6;     % [mm^2-->m^2] Inlet port minimum passage area 
+        GEOMETRY.INport_Amax  =  GEOMETRY.INport_Amax*1e-6;     % [mm^2-->m^2] Inlet port maximum passage area 
+        GEOMETRY.OUTport_Amin =  GEOMETRY.OUTport_Amin*1e-6;    % [mm^2-->m^2] Outlet port minimum passage area
+        GEOMETRY.OUTport_Amax =  GEOMETRY.OUTport_Amax*1e-6;    % [mm^2-->m^2] Outlet port maximum passage area 
     elseif c == 2
-        GEOMETRY.d           = GEOMETRY.d *1e-3;               % [mm -> m] rotor diameter
-        GEOMETRY.L           = GEOMETRY.L *1e-3;               % [mm -> m] rotor length
-        GEOMETRY.l           = GEOMETRY.l *1e-3;               % [mm -> m] vane height
-        GEOMETRY.s           = GEOMETRY.s *1e-3;               % [mm -> m] vane thickness
-        GEOMETRY.d_hub       = GEOMETRY.d_hub *1e-3;           % [mm -> m] bushing diameter
-        GEOMETRY.th_SucOpen  = deg2rad(GEOMETRY.th_SucOpen);   % [deg -> rad] suction opening angle
-        GEOMETRY.th_SucClose = deg2rad(GEOMETRY.th_SucClose);  % [deg -> rad] suction close angle
-        GEOMETRY.th_DisOpen  = deg2rad(GEOMETRY.th_DisOpen);   % [deg -> rad] delivery opening angle
-        GEOMETRY.th_DisClose = deg2rad(GEOMETRY.th_DisClose);  % [deg -> rad] delivery closing angle
-        GEOMETRY.TgAngle     = deg2rad(GEOMETRY.TgAngle);      % [°]  sealing arc between stator and rotor
-        GEOMETRY.RSclr       = GEOMETRY.RSclr*1e-6;                        % [micron->m] clearance between rotor and stator
-        GEOMETRY.VSclr = GEOMETRY.VSclr*1e-6;                      % [micron->m] clearance between vane and end-plates
-        GEOMETRY.PEclr = GEOMETRY.PEclr*1e-6;                      % [micron->m] clearance between rotor and end-plates
-        GEOMETRY.INport_Amin =  GEOMETRY.INport_Amin*1e-6;    % [mm^2-->m^2] Inlet port minimum passage area 
-        GEOMETRY.INport_Amax =  GEOMETRY.INport_Amax*1e-6;     % [mm^2-->m^2] Inlet port maximum passage area 
-        GEOMETRY.OUTport_Amin=  GEOMETRY.OUTport_Amin*1e-6;     % [mm^2-->m^2] Outlet port minimum passage area
-        GEOMETRY.OUTport_Amax=  GEOMETRY.OUTport_Amax*1e-6;    % [mm^2-->m^2] Outlet port maximum passage area 
+        GEOMETRY.d            = GEOMETRY.d *1e-3;               % [mm -> m] rotor diameter
+        GEOMETRY.L            = GEOMETRY.L *1e-3;               % [mm -> m] rotor length
+        GEOMETRY.l            = GEOMETRY.l *1e-3;               % [mm -> m] vane height
+        GEOMETRY.s            = GEOMETRY.s *1e-3;               % [mm -> m] vane thickness
+        GEOMETRY.d_hub        = GEOMETRY.d_hub *1e-3;           % [mm -> m] bushing diameter
+        GEOMETRY.th_SucOpen   = deg2rad(GEOMETRY.th_SucOpen);   % [deg -> rad] suction opening angle
+        GEOMETRY.th_SucClose  = deg2rad(GEOMETRY.th_SucClose);  % [deg -> rad] suction close angle
+        GEOMETRY.th_DisOpen   = deg2rad(GEOMETRY.th_DisOpen);   % [deg -> rad] delivery opening angle
+        GEOMETRY.th_DisClose  = deg2rad(GEOMETRY.th_DisClose);  % [deg -> rad] delivery closing angle
+        GEOMETRY.TgAngle      = deg2rad(GEOMETRY.TgAngle);      % [°]  sealing arc between stator and rotor
+        GEOMETRY.RSclr        = GEOMETRY.RSclr*1e-6;            % [micron->m] clearance between rotor and stator
+        GEOMETRY.VSclr        = GEOMETRY.VSclr*1e-6;            % [micron->m] clearance between vane and end-plates
+        GEOMETRY.PEclr        = GEOMETRY.PEclr*1e-6;            % [micron->m] clearance between rotor and end-plates
+        GEOMETRY.INport_Amin  = GEOMETRY.INport_Amin*1e-6;      % [mm^2-->m^2] inlet port minimum passage area 
+        GEOMETRY.INport_Amax  = GEOMETRY.INport_Amax*1e-6;      % [mm^2-->m^2] inlet port maximum passage area 
+        GEOMETRY.OUTport_Amin = GEOMETRY.OUTport_Amin*1e-6;     % [mm^2-->m^2] outlet port minimum passage area
+        GEOMETRY.OUTport_Amax = GEOMETRY.OUTport_Amax*1e-6;     % [mm^2-->m^2] outlet port maximum passage area 
     
     end, clear c
     
     if FLAG.fSDP
     % Intake struct
-       INTAKE.lenght     = INTAKE.lenght*1e-3;                    %pipe length [m] 
-       INTAKE.D_up       = INTAKE.D_up*1e-3;                      %diameter at pipe's start (upstream side) [m]
-       INTAKE.D_do       = INTAKE.D_do*1e-3;                      %diameter at pipe's end (downstream side) [m]
-       INTAKE.roughness  = INTAKE.roughness*1e-6;                 %roughness [m]    
-       INTAKE.cpitch     = INTAKE.cpitch*1e-3;                    %corrugated pitch [m]
-       INTAKE.ct         = INTAKE.ct*1e-3;                        %corrugation height [m]
+       INTAKE.lenght     = INTAKE.lenght*1e-3;                  % pipe length [m] 
+       INTAKE.D_up       = INTAKE.D_up*1e-3;                    % diameter at pipe's start (upstream side) [m]
+       INTAKE.D_do       = INTAKE.D_do*1e-3;                    % diameter at pipe's end (downstream side) [m]
+       INTAKE.roughness  = INTAKE.roughness*1e-6;               % roughness [m]    
+       INTAKE.cpitch     = INTAKE.cpitch*1e-3;                  % corrugated pitch [m]
+       INTAKE.ct         = INTAKE.ct*1e-3;                      % corrugation height [m]
     end
     
     % Gas struct
-    GAS.MM_g = GAS.MM_g*1e-3;  % [kg/kmol -> kg/mol] gas molar mass
+    GAS.MM_g = GAS.MM_g*1e-3;                                   % [kg/kmol -> kg/mol] gas molar mass
 
     % Liquid struct (oil)
-    LIQUID.T_ref    = LIQUID.T_ref +273.15;  % [°C -> K]    oil reference temperature
+    LIQUID.T_ref    = LIQUID.T_ref +273.15;                     % [°C -> K]    oil reference temperature
     
     % =======================================================================
     % =======================================================================
@@ -132,13 +132,13 @@ function SVECpreProc (IO, FLAG, NUMERIC, PROCESS, GEOMETRY, GAS, LIQUID, LEAK, V
     % =======================================================================
 
     % Nozzles struct
-    NOZZLES.p_inj    = NOZZLES.p_inj .*1e+5;    % [bar -> Pa] injection pressure
-    NOZZLES.Tl_in    = NOZZLES.Tl_in + 273.15;  % [°C -> K]   oil inlet temperature temperature
-    NOZZLES.theta_nz = deg2rad(NOZZLES.theta_nz);  % [deg -> rad] nozzle angular position
+    NOZZLES.p_inj    = NOZZLES.p_inj .*1e+5;          % [bar -> Pa] injection pressure
+    NOZZLES.Tl_in    = NOZZLES.Tl_in + 273.15;        % [°C -> K]   oil inlet temperature temperature
+    NOZZLES.theta_nz = deg2rad(NOZZLES.theta_nz);     % [deg -> rad] nozzle angular position
 
     % mechanical struct
-    STRESS.sigmaR_traz = STRESS.sigmaR_traz *1e+6;  % [Mpa -> Pa] ultimate tensile stress
-    STRESS.sigmaR_comp = STRESS.sigmaR_comp *1e+6;  % [Mpa -> Pa] ultimate compressive stress
+    STRESS.sigmaR_traz = STRESS.sigmaR_traz *1e+6;    % [Mpa -> Pa] ultimate tensile stress
+    STRESS.sigmaR_comp = STRESS.sigmaR_comp *1e+6;    % [Mpa -> Pa] ultimate compressive stress
     
     % =======================================================================
     % =======================================================================
