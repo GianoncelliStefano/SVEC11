@@ -175,13 +175,13 @@ function CALL_SVEC_M135A
         % INTAKE DUCT PROPERTIES % 
         % insert L = 0 in case the duct is not present
         
-        INTAKE.pipe       = "corrugated";               %"standard" or "corrugated"
-        INTAKE.lenght     = 1000;                     %pipe length [mm] 
-        INTAKE.D_up       = 102;                      %diameter at pipe's start (upstream side) [mm]
-        INTAKE.D_do       = 102;                      %diameter at pipe's end (downstream side) [mm]
-        INTAKE.roughness  = 12.5;                     %roughness [micron]    
-        INTAKE.cpitch     = 10;                       %corrugated pitch [mm]
-        INTAKE.ct         = 9;                        %corrugation height [mm]
+        INTAKE.pipe       = "corrugated";                         % "standard" or "corrugated"
+        INTAKE.lenght     = 1000;                                 % pipe length [mm] 
+        INTAKE.D_up       = 120;                                  % internal diameter at pipe's start (upstream side) [mm]
+        INTAKE.D_do       = 130;                                  % internal diameter at pipe's end (downstream side) [mm]
+        INTAKE.roughness  = 12.5;                                 % roughness [micron]    
+        INTAKE.cpitch     = 0.222*(INTAKE.D_up+INTAKE.D_do)*0.5;  % corrugated pitch [mm]
+        INTAKE.ct         = 0.070*(INTAKE.D_up+INTAKE.D_do)*0.5;  % corrugation height [mm]       
         
         % INTAKE VALVE SELECTION %      
         % Available intake valves:
