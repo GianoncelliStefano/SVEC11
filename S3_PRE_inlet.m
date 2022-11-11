@@ -1,4 +1,4 @@
-function [p_in,T_in,deltap_inlet] = S3PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp1,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP)
+function [p_in,T_in,deltap_inlet] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp1,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP)
 % This function sets up the iterative approach useful for the evaluation of
 % the actual temperature and pressure at the inlet of the air-end section 
 %
