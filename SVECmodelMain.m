@@ -98,7 +98,7 @@
 
     %% S3PRE - INLET PROCESS + PORT MODEL %%
     % Inlet process model. Set fSDP to 0 for air-end only computation
-    if fOK, [p_in,T_in,deltap_inlet] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp(1),MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP);
+    if fOK, [p_in,T_in,deltap_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp(1),MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP,fOK);
     end
     
     %% S3 - THERMODYNAMICS %%

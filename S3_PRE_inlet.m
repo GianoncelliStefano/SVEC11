@@ -1,4 +1,4 @@
-function [p_in,T_in,deltap_inlet] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp1,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP)
+function [p_in,T_in,deltap_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp1,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP,fOK)
 % This function sets up the iterative approach useful for the evaluation of
 % the actual temperature and pressure at the inlet of the air-end section 
 %
@@ -79,6 +79,23 @@ checkloop = err < toll_d;                                 % loop exit condition
  deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]  % intake process partial pressure loss on each component
 
  end
+
+ %% CHECK %%
+    f1 = ((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))/((gamma*R_g*T_in)^0.5) > 0.3;                       % Mach number check 
+    f2 = ((p_in/(R_g*T_in))*((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))*min(D_do,D_up))/mu_g < 4000;     % Reynolds number check
+    
+    if f1
+        warning('S3_PRE_inlet: incompressible fluid model is not valid, Ma > 0.3');
+        SX_Logfile ('e',{lastwarn});
+        fOK = 0;
+    end
+    if f2
+        warning('S3_PRE_inlet: turbolent flow hypothesis is not valid, Re < 4000');
+        SX_Logfile ('e',{lastwarn});
+        fOK = 0;
+    end
+
+    clear f1 f2
 end
 
 %% INTERNAL FUNCTIONS  %%
@@ -179,7 +196,7 @@ case 1                                                   % costant section
          elseif pipe == "corrugated"
                 if ((t/D_up) >= 0.0455) && ((t/D_up) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6) 
                     f = Darcy_Kauder(Re,D_up,t,s);
-                elseif 273.15 < T_i < 313.15  
+                elseif (273.15 < T_i) && (T_i < 313.15)  
                     f = Darcy_HawHelmes(D_up,s);
                 else
              warning('S3PRE_inlet: Select a coherent model for corrugated pipe')
@@ -326,7 +343,7 @@ delta_p = Pin - Pout;                             % pressure drop over the port
 % MODEL SOLUTION AT STEADY STATE %
 function [Pss,Tss,Uss,Pd,Td] = Inlet_PortModel(P,T,Xi,Amean,gamma,R,m)
 fun1= @(Pd) P/(R*T)*(1-Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(1/(gamma-1))*Xi*Amean*(((2*gamma*R*T)/(gamma-1))*(1-(Pd/P)^((gamma-1)/gamma)))^(1/2)-m;
-Pdrange=[10000 P];
+Pdrange=[0 P];
 Pd=fzero(fun1,Pdrange);
 Uss=((2*gamma*R*T)/(gamma-1)*Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(1/2);
 Pss=P*(1-Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(gamma/(gamma-1));
