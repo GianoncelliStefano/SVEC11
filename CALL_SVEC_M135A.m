@@ -176,7 +176,7 @@ function CALL_SVEC_M135A
         % insert L = 0 in case the duct is not present
         
         INTAKE.pipe       = "corrugated";                         % "standard" or "corrugated"
-        INTAKE.lenght     = 1000;                                 % pipe length [mm] 
+        INTAKE.lenght     = 1020;                                 % pipe length [mm] 
         INTAKE.D_up       = 120;                                  % internal diameter at pipe's start (upstream side) [mm]
         INTAKE.D_do       = 130;                                  % internal diameter at pipe's end (downstream side) [mm]
         INTAKE.roughness  = 12.5;                                 % roughness [micron]    

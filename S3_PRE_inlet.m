@@ -153,18 +153,6 @@ function [p_f,T_f,delta_p]   = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_
 % checks %
 check1 = L ~= 0;                                         % check if an intake pipe is present: 1 --> yes 0 --> no
 check2 = L>0 && D_up==D_do;                              % check if the section is costant or not 1 --> costant section 0 --> variable section
-
-switch check1
-
-case 0                                                   % no intake pipe present
-    p_f     = p_i;
-    T_f     = T_i;
-    delta_p = 0;
-case 1                                                   % intake pipe is present
-% Starting Conditions %
-R_u    = SX_Constant({'UniGasConstant'});                % universal gas constant [J/mol K] 
-rho_i  = p_i*MM_g/(R_u*T_i);                             % density at pipe beginning [kg/m3]
-
 % Forward or Backward Process %
   switch fb
         case 1                                           %forward -> pressure loss | backward -> pressure gain 
@@ -172,6 +160,15 @@ rho_i  = p_i*MM_g/(R_u*T_i);                             % density at pipe begin
         case 2
              coeffDP = -1;
   end
+
+switch check1
+
+case 0                                                   % no intake pipe present
+    delta_p = 0;
+case 1                                                   % intake pipe is present
+% Starting Conditions %
+R_u    = SX_Constant({'UniGasConstant'});                % universal gas constant [J/mol K] 
+rho_i  = p_i*MM_g/(R_u*T_i);                             % density at pipe beginning [kg/m3]
 
 % Distributed losses and friction coefficient computing %
 switch check2
