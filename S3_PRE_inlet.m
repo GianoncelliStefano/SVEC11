@@ -34,56 +34,56 @@ function [p_in,T_in,deltap_inlet] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_
 % 
 % HISTORY:  Gianoncelli_Genoni: creation of the file, see thesis for further information
 
- %% fSDP flag check %%
+ %% INTAKE PROCESS LOOP %%
  switch fSDP
-     case 0 
+    case 0                                                   % intake process model not activated
          p_in         = p_suc;                                % when the intake model is not active, the air-end inlet pressure is equal to the suction one
          T_in         = T_suc;                                % when the intake model is not active, the air-end inlet temperature is equal to the suction one
          deltap_inlet = 0;                                    % when the intake model is not active, the pressure drop during the suction process is null 
-     case 1
- port_type   = "inlet";
+    case 1                                                   % intake process model activated
+ port_type   = "inlet";                                       
  R_g         = SX_Constant({'UniGasConstant'})/MM_g;          % specific gas constant [J/kg K];
  gamma       = (c_v + R_g)/c_v;                               % heat capacity ratio
  m_gas_guess = p_suc*V_comp1/(R_g*T_suc)*c*n_van*rpm/60;      % guessed mass flow rate for first iteration 
- alfa        = 0.00001;                                       % under-relaxation factor for the inlet loop
+ alfa        = 1e-5;                                          % under-relaxation factor for the inlet loop
  Loopinlet   = 1;                                             % loop control variable 
  toll_d      = 1e-6;                                          % mass flow rate tolerance for the loop
  fb          = 1;                                             % flag for forward computation of pressure losses
  
- while Loopinlet
+  while Loopinlet
 
-[p_df,T_df,delta_pfilter] = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);                               % intake filter concentrated pressure drop
+[p_df,T_df,delta_pfilter]  = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);                               % intake filter concentrated pressure drop
 
-[p_dp,T_dp,delta_pduct]   = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_df,T_df,m_gas_guess,MM_g,gamma,mu_g);  % intake duct distributed pressure drop
+[p_dp,T_dp,delta_pduct]    = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_df,T_df,m_gas_guess,MM_g,gamma,mu_g);  % intake duct distributed pressure drop
 
-[p_dv,T_dv,delta_pvalve]  = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                  % intake valve concentrated pressure drop
+[p_dv,T_dv,delta_pvalve]   = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                  % intake valve concentrated pressure drop
 
-[Pout , Tout]             = PortModel(p_dv , T_dv , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);                 % inlet port pressure drop
+[Pout , Tout, delta_pport] = PortModel(p_dv , T_dv , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);                 % inlet port pressure drop
 
 mast      = Pout*V_comp1/(R_g*Tout)*c*n_van*rpm/60;     % updated mass flow rate                                                                           
 err       = abs(mast-m_gas_guess);                        % residual error on the control variable
 checkloop = err < toll_d;                                 % loop exit condition 
 
 
-if  checkloop
+      if  checkloop
     p_in      = Pout;                                     % when converged, the air-end inlet pressure is equal to the loop output one
     T_in      = Tout;                                     % when converged, the air-end inlet temperature is equal to the loop output one
     Loopinlet = 0;                                          
     
-else
+      else
     m_gas_guess = (m_gas_guess)*(1-alfa);                 % loop decisional variable update through under-relaxation factor
-end
- end
+      end
+   end
  
- deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  (p_dv - Pout);     % intake process overall pressure loss 
- deltap       = [delta_pfilter , delta_pduct , delta_pvalve, p_dv - Pout, Pout]  % intake process partial pressure loss on each component
+ deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  delta_pport;     % intake process overall pressure loss 
+ deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]  % intake process partial pressure loss on each component
 
  end
 end
 
 %% INTERNAL FUNCTIONS  %%
 
-function [p_f,T_f,delta_p] = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,gamma)
+function [p_f,T_f,delta_p]   = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,gamma)
 % This function computes concentrated pressure losses and temperature variation across a flow disturbing element
 %
 % INPUT
@@ -103,26 +103,27 @@ function [p_f,T_f,delta_p] = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,ga
 %
 % Developers: Genoni-Gianoncelli
 
-%% Starting Conditions %%
+% Starting Conditions %
 R_u    = SX_Constant({'UniGasConstant'});           % universal gas constant [J/mol K]
 rho_i  = p_i*MM_g/(R_u*T_i);                        % density at element beginning [kg/m3]
 Q      = m_flow/rho_i;                              % volumetric flow rate [m3/s]
 
-%% Forward or Backward Process %%
-if fb == 1                                          %forward --> pressure loss | backward --> pressure gain 
+% Forward or Backward Process %
+switch fb
+    case 1                                          %forward --> pressure loss | backward --> pressure gain 
    coeffDP = 1;
-elseif fb == 2
+    case 2
    coeffDP = -1;
 end
 
-%% Concentrated Losses Computing %%
+% Concentrated Losses Computation %
 delta_p = coeff(1)*(Q^2) + coeff(2)*Q + coeff(3);
 p_f = p_i - delta_p*coeffDP;
 T_f = T_i * (p_f/p_i)^((gamma-1)/gamma);            %HP: adiabatic element
 %rho_f = p_f*MM_g/(R_u*T_f);
 
  end
-function [p_f,T_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,T_i,m_flow,MM_g,gamma,mu_g)
+function [p_f,T_f,delta_p]   = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,T_i,m_flow,MM_g,gamma,mu_g)
 % This function computes returns pressure, temperature and distributed
 % pressure losses along a pipe
 % 
@@ -149,18 +150,19 @@ function [p_f,T_f,delta_p] = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,
 %
 % Developers: Genoni-Gianoncelli
 
-%% Starting Conditions %%
+% Starting Conditions %
 R_u    = SX_Constant({'UniGasConstant'});                 % universal gas constant [J/mol K] 
 rho_i  = p_i*MM_g/(R_u*T_i);                              % density at pipe beginning [kg/m3]
 
-%% Forward or Backward Process %%
-if fb == 1                         %forward -> pressure loss | backward -> pressure gain 
+% Forward or Backward Process %
+switch fb
+    case 1                         %forward -> pressure loss | backward -> pressure gain 
    coeffDP = 1;
-elseif fb == 2
+    case 2
    coeffDP = -1;
 end
 
-%% Distributed losses and friction coefficient computing %%
+% Distributed losses and friction coefficient computing %
 if L == 0
     p_f     = p_i;
     T_f     = T_i;
@@ -264,7 +266,7 @@ f = (D/s)*(1-(D/(D + 0.438*s))^2)^2;
 end
 
 end
-function [Pout,Tout]       = PortModel(Pin,Tin,Amax,Amin,gamma,Rgas,m,port_type)
+function [Pout,Tout,delta_p] = PortModel(Pin,Tin,Amax,Amin,gamma,Rgas,m,port_type)
 % This function evaluates, with a simplified approach, the gas-dynamic 
 % effects happening in correspondance of the inlet and outlet ports.
 % The mean fluid velocity at steady state will be computed along with 
@@ -315,8 +317,8 @@ switch port_type
         [Pinf, Tinf,Uinf,Pout,Tout]  = Outlet_PortModel(Pin,Tin,Xi,Amean,gamma,Rgas,m);
 end
 
-m_port_inf = Pinf*Uinf*Amean/(Rgas*Tinf);       %steady state mass flow rate [kg/s]  
-
+m_port_inf = Pinf*Uinf*Amean/(Rgas*Tinf);       % steady state mass flow rate [kg/s]  
+delta_p = Pout-Pin;                             % pressure drop over the port
 %% MODEL SOLUTION AT STEADY STATE %%
 function [Pss,Tss,Uss,Pd,Td] = Inlet_PortModel(P,T,Xi,Amean,gamma,R,m)
 fun1= @(Pd) P/(R*T)*(1-Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(1/(gamma-1))*Xi*Amean*(((2*gamma*R*T)/(gamma-1))*(1-(Pd/P)^((gamma-1)/gamma)))^(1/2)-m;
