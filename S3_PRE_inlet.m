@@ -201,7 +201,7 @@ case 0                                                     % variable section
     D_mean = 0.5*(D_up + D_do);                          
     Re = 4*m_flow/(mu_g*pi*D_mean);
     if pipe == "standard"
-        f = Darcy_TkaMil(Re,D_mean,eps);
+        f = Darcy_SwameeJain(Re,D_mean,eps);
        
     elseif pipe == "corrugated"
         if ((t/D_up) >= 0.0455) && ((t/D_up) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6) 
