@@ -150,49 +150,55 @@ function [p_f,T_f,delta_p]   = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_
 %
 % Developers: Genoni-Gianoncelli
 
-% Starting Conditions %
-R_u    = SX_Constant({'UniGasConstant'});                 % universal gas constant [J/mol K] 
-rho_i  = p_i*MM_g/(R_u*T_i);                              % density at pipe beginning [kg/m3]
+% checks %
+check1 = L ~= 0;                                         % check if an intake pipe is present: 1 --> yes 0 --> no
+check2 = L>0 && D_up==D_do;                              % check if the section is costant or not 1 --> costant section 0 --> variable section
 
-% Forward or Backward Process %
-switch fb
-    case 1                         %forward -> pressure loss | backward -> pressure gain 
-   coeffDP = 1;
-    case 2
-   coeffDP = -1;
-end
+switch check1
 
-% Distributed losses and friction coefficient computing %
-if L == 0
+case 0                                                   % no intake pipe present
     p_f     = p_i;
     T_f     = T_i;
     delta_p = 0;
-    
-elseif D_up == D_do
-    Re = 4*m_flow/(mu_g*pi*D_up);
-    if pipe == "standard"
-       f = Darcy_SwameeJain(Re,D_up,eps);
-       
-    elseif pipe == "corrugated"
-         if ((t/D_up) >= 0.0455) && ((t/D_up) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6) 
-           f = Darcy_Kauder(Re,D_up,t,s);
-         elseif 273.15 < T_i < 313.15  
-           f = Darcy_HawHelmes(D_up,s);
-         else
+case 1                                                   % intake pipe is present
+% Starting Conditions %
+R_u    = SX_Constant({'UniGasConstant'});                % universal gas constant [J/mol K] 
+rho_i  = p_i*MM_g/(R_u*T_i);                             % density at pipe beginning [kg/m3]
+
+% Forward or Backward Process %
+  switch fb
+        case 1                                           %forward -> pressure loss | backward -> pressure gain 
+             coeffDP = 1;
+        case 2
+             coeffDP = -1;
+  end
+
+% Distributed losses and friction coefficient computing %
+switch check2
+case 1                                                   % costant section                           
+            Re = 4*m_flow/(mu_g*pi*D_up);                
+         if pipe == "standard"
+            f = Darcy_SwameeJain(Re,D_up,eps);
+         elseif pipe == "corrugated"
+                if ((t/D_up) >= 0.0455) && ((t/D_up) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6) 
+                    f = Darcy_Kauder(Re,D_up,t,s);
+                elseif 273.15 < T_i < 313.15  
+                    f = Darcy_HawHelmes(D_up,s);
+                else
              warning('S3PRE_inlet: Select a coherent model for corrugated pipe')
              SX_Logfile ('v',{lastwarn});
-         end
+                end
          
-    else
+          else
         warning('S3PRE_inlet: Select a coherent type of pipe')
         SX_Logfile ('v',{lastwarn});
        
-    end
+          end
     
-    delta_p = PressDrop_Incomp_Dsame(m_flow,f,D_up,L,rho_i);
+delta_p = PressDrop_Incomp_Dsame(m_flow,f,D_up,L,rho_i);   % pressure drop computation for ducts with costant section
 
-else 
-    D_mean = 0.5*(D_up + D_do);                                              %Mean diameter used for Reynolds
+case 0                                                     % variable section 
+    D_mean = 0.5*(D_up + D_do);                          
     Re = 4*m_flow/(mu_g*pi*D_mean);
     if pipe == "standard"
         f = Darcy_TkaMil(Re,D_mean,eps);
@@ -200,7 +206,7 @@ else
     elseif pipe == "corrugated"
         if ((t/D_up) >= 0.0455) && ((t/D_up) <= 0.0635) && ((t/s) >= 0.2) &&((t/s) <= 0.6) 
             f = Darcy_Kauder(Re,D_mean,t,s);
-        elseif 273.15 < T_i < 313.15
+        elseif (273.15 < T_i) && (T_i < 313.15)
             f = Darcy_HawHelmes(D_mean,s);
         else
             warning('S3PRE_inlet: Select a coherent model for corrugated pipe')
@@ -213,12 +219,13 @@ else
        
     end
     
-    delta_p = PressDrop_Incomp_Ddiff(m_flow,f,D_up,D_do,L,rho_i);
+delta_p = PressDrop_Incomp_Ddiff(m_flow,f,D_up,D_do,L,rho_i);% pressure drop computation for ducts with variable section
     
+end
 end
 
 p_f = p_i - delta_p*coeffDP;
-T_f = T_i * (p_f/p_i)^((gamma-1)/gamma);                                   %HP: adiabatic pipe
+T_f = T_i * (p_f/p_i)^((gamma-1)/gamma);                     %HP: adiabatic pipe
 % rho_f = p_f*MM_g/(R_u*T_f);
 
 %% Pressure Drop Functions %%
@@ -305,8 +312,7 @@ function [Pout,Tout,delta_p] = PortModel(Pin,Tin,Amax,Amin,gamma,Rgas,m,port_typ
 % 
 % HISTORY:  Gianoncelli_Genoni: creation of the file
 
-%% DEFINITIONS %%
-
+% DEFINITIONS %
 Xi = Amin/Amax;                                 % contraction ratio [-]
 Amean=mean([Amax,Amin]);                        % average port area [m^2]
 
@@ -318,8 +324,9 @@ switch port_type
 end
 
 m_port_inf = Pinf*Uinf*Amean/(Rgas*Tinf);       % steady state mass flow rate [kg/s]  
-delta_p = Pout-Pin;                             % pressure drop over the port
-%% MODEL SOLUTION AT STEADY STATE %%
+delta_p = Pin - Pout;                             % pressure drop over the port
+
+% MODEL SOLUTION AT STEADY STATE %
 function [Pss,Tss,Uss,Pd,Td] = Inlet_PortModel(P,T,Xi,Amean,gamma,R,m)
 fun1= @(Pd) P/(R*T)*(1-Xi^2*(1-(Pd/P)^((gamma-1)/gamma)))^(1/(gamma-1))*Xi*Amean*(((2*gamma*R*T)/(gamma-1))*(1-(Pd/P)^((gamma-1)/gamma)))^(1/2)-m;
 Pdrange=[10000 P];
