@@ -239,7 +239,7 @@ function [delta_p] = PressDrop_Incomp_Ddiff(m_flow,f,D_up,D_do,L,rho)
 %For circular pipes with changing diameter (linear behavior of D along
 %axial direction
 %Valid for incompressible fluid conditions (Mach < 0.3)
-tn_Beta = tan((D_up - D_do)/(2*L));
+tn_Beta = ((D_up - D_do)/(2*L));
 delta_p = 1/rho * (1/(D_do^4) - 1/(D_up^4)) * (8 + f/tn_Beta)* (m_flow/pi)^2 ;
 end
 
