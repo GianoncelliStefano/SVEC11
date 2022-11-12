@@ -26,12 +26,14 @@ function [p_in,T_in,deltap_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INp
 % mu_g           [Pa s]     : gas dynamic viscosity
 % coeff_infilter [-]        : filter pressure losses coefficients
 % fSDP           [-]        : suction and discharge model activation flag
+% fOK            [bool]     : OK flag (1 - no problem occourred, 0 - a problem have been spotted, SVEC will exit the simulation)
 %
 % OUTPUT
 % p_in           [Pa]       : inlet pressure at the begginning of the closed cell process (inlet of the air-end)
 % T_in           [K]        : inlet temperature at the begginning of the closed cell process (inlet of the air-end)
 % deltap_inlet   [Pa]       : inlet process pressure loss (p_in - p_suc)
-% 
+% fOK            [bool]     : OK flag (1 - no problem occourred, 0 - a problem have been spotted, SVEC will exit the simulation)
+%
 % HISTORY:  Gianoncelli_Genoni: creation of the file, see thesis for further information
 
  %% INTAKE PROCESS LOOP %%
@@ -52,15 +54,15 @@ function [p_in,T_in,deltap_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INp
  
   while Loopinlet
 
-[p_df,T_df,delta_pfilter]  = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);                               % intake filter concentrated pressure drop
+[p_df,T_df,delta_pfilter]    = Concentrated_Losses(fb,coeff_infilter,m_gas_guess,p_suc,T_suc,MM_g,gamma);                                   % intake filter concentrated pressure drop | df: downstream filter
 
-[p_dp,T_dp,delta_pduct]    = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_df,T_df,m_gas_guess,MM_g,gamma,mu_g);  % intake duct distributed pressure drop
+[p_dp,T_dp,delta_pduct,fOK]  = Distributed_Losses(fb,pipe,cpitch,ct,lenght,D_up,D_do,roughness,p_df,T_df,m_gas_guess,MM_g,gamma,mu_g,fOK);  % intake duct distributed pressure drop    | dp: downstream pipe
 
-[p_dv,T_dv,delta_pvalve]   = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                  % intake valve concentrated pressure drop
+[p_dv,T_dv,delta_pvalve]     = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                      % intake valve concentrated pressure drop  | dv: downstrem valve
 
-[Pout , Tout, delta_pport] = PortModel(p_dv , T_dv , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);                 % inlet port pressure drop
+[Pout,Tout,delta_pport]      = PortModel(p_dv , T_dv , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);                     % inlet port pressure drop
 
-mast      = Pout*V_comp1/(R_g*Tout)*c*n_van*rpm/60;     % updated mass flow rate                                                                           
+mast      = Pout*V_comp1/(R_g*Tout)*c*n_van*rpm/60;       % updated mass flow rate                                                                           
 err       = abs(mast-m_gas_guess);                        % residual error on the control variable
 checkloop = err < toll_d;                                 % loop exit condition 
 
@@ -75,13 +77,13 @@ checkloop = err < toll_d;                                 % loop exit condition
       end
    end
  
- deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  delta_pport;     % intake process overall pressure loss 
+ deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  delta_pport;        % intake process overall pressure loss 
  deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]  % intake process partial pressure loss on each component
 
  end
 
  %% CHECK %%
-    f1 = ((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))/((gamma*R_g*T_in)^0.5) > 0.3;                       % Mach number check 
+    f1 = ((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))/((gamma*R_g*T_in)^0.5) > 0.3;                       % Mach number check  
     f2 = ((p_in/(R_g*T_in))*((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))*min(D_do,D_up))/mu_g < 4000;     % Reynolds number check
     
     if f1
@@ -112,8 +114,7 @@ function [p_f,T_f,delta_p]   = Concentrated_Losses(fb,coeff,m_flow,p_i,T_i,MM_g,
 % MM_g    [kg/mol]     :molar mass of gas 
 % gamma   [-]          :heat capacity ratio
 %
-% OUTPUT
-% 
+% OUTPUT 
 % p_f     [Pa]         :resulting pressure
 % T_f     [K]          :resulting temperature
 % delta_p [Pa]         :resulting pressure drop
@@ -137,10 +138,9 @@ end
 delta_p = coeff(1)*(Q^2) + coeff(2)*Q + coeff(3);
 p_f = p_i - delta_p*coeffDP;
 T_f = T_i * (p_f/p_i)^((gamma-1)/gamma);            %HP: adiabatic element
-%rho_f = p_f*MM_g/(R_u*T_f);
 
  end
-function [p_f,T_f,delta_p]   = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,T_i,m_flow,MM_g,gamma,mu_g)
+function [p_f,T_f,delta_p,fOK]   = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_i,T_i,m_flow,MM_g,gamma,mu_g,fOK)
 % This function computes returns pressure, temperature and distributed
 % pressure losses along a pipe
 % 
@@ -159,17 +159,20 @@ function [p_f,T_f,delta_p]   = Distributed_Losses(fb,pipe,s,t,L,D_up,D_do,eps,p_
 % MM_g    [kg/mol]      :molar mass of gas 
 % gamma   [-]           :cp/cv
 % mu_g    [Pa s]        :gas dynamic viscosity
+% fOK     [bool]        : OK flag (1 - no problem occourred, 0 - a problem have been spotted, SVEC will exit the simulation)
 %
 % OUTPUT
 % p_f     [Pa]          :resulting pressure
 % T_f     [K]           :resulting temperature
 % delta_p [Pa]          :resulting pressure drop
+% fOK     [bool]        : OK flag (1 - no problem occourred, 0 - a problem have been spotted, SVEC will exit the simulation)
 %
 % Developers: Genoni-Gianoncelli
 
 % checks %
 check1 = L ~= 0;                                         % check if an intake pipe is present: 1 --> yes 0 --> no
 check2 = L>0 && D_up==D_do;                              % check if the section is costant or not 1 --> costant section 0 --> variable section
+
 % Forward or Backward Process %
   switch fb
         case 1                                           %forward -> pressure loss | backward -> pressure gain 
@@ -178,16 +181,14 @@ check2 = L>0 && D_up==D_do;                              % check if the section 
              coeffDP = -1;
   end
 
+% Distributed Losses and Friction Coefficient Computing %
 switch check1
-
 case 0                                                   % no intake pipe present
     delta_p = 0;
 case 1                                                   % intake pipe is present
-% Starting Conditions %
 R_u    = SX_Constant({'UniGasConstant'});                % universal gas constant [J/mol K] 
 rho_i  = p_i*MM_g/(R_u*T_i);                             % density at pipe beginning [kg/m3]
 
-% Distributed losses and friction coefficient computing %
 switch check2
 case 1                                                   % costant section                           
             Re = 4*m_flow/(mu_g*pi*D_up);                
@@ -201,12 +202,13 @@ case 1                                                   % costant section
                 else
              warning('S3PRE_inlet: Select a coherent model for corrugated pipe')
              SX_Logfile ('v',{lastwarn});
+             fOK = 0;
                 end
          
           else
         warning('S3PRE_inlet: Select a coherent type of pipe')
         SX_Logfile ('v',{lastwarn});
-       
+        fOK = 0;
           end
     
 delta_p = PressDrop_Incomp_Dsame(m_flow,f,D_up,L,rho_i);   % pressure drop computation for ducts with costant section
@@ -225,11 +227,13 @@ case 0                                                     % variable section
         else
             warning('S3PRE_inlet: Select a coherent model for corrugated pipe')
             SX_Logfile ('v',{lastwarn});
+            fOK = 0;
         end
         
     else
         warning('S3PRE_inlet: Select a coherent type of pipe')
         SX_Logfile ('v',{lastwarn});
+        fOK = 0;
        
     end
     
@@ -240,7 +244,6 @@ end
 
 p_f = p_i - delta_p*coeffDP;
 T_f = T_i * (p_f/p_i)^((gamma-1)/gamma);                     %HP: adiabatic pipe
-% rho_f = p_f*MM_g/(R_u*T_f);
 
 %% Pressure Drop Functions %%
 function [delta_p] = PressDrop_Incomp_Dsame(m_flow,f,D,L,rho)
