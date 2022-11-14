@@ -80,8 +80,6 @@ checkloop = err < toll_d;                                 % loop exit condition
  deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  delta_pport;        % intake process overall pressure loss 
  deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]  % intake process partial pressure loss on each component
 
- end
-
  %% CHECK %%
     f1 = ((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))/((gamma*R_g*T_in)^0.5) > 0.3;                       % Mach number check  
     f2 = ((p_in/(R_g*T_in))*((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))*min(D_do,D_up))/mu_g < 4000;     % Reynolds number check
@@ -98,6 +96,8 @@ checkloop = err < toll_d;                                 % loop exit condition
     end
 
     clear f1 f2
+    
+ end
 end
 
 %% INTERNAL FUNCTIONS  %%

@@ -27,7 +27,7 @@ function CALL_SVEC_M135K
         %% FLAG %%
         FLAG.fDBG      = 1;      % Controls                   0: User only      1: User + Developer
         FLAG.fSTR      = 0;      % Stress Analysis            0: Disable        1: Enable
-        FLAG.fSDP      = 1;      % Suction&Discharge Model    0: Disable        1: Enable 
+        FLAG.fSDP      = 0;      % Suction&Discharge Model    0: Disable        1: Enable 
         FLAG.fLKG      = 1;      % Leakages                   0: Disable        1: Enable
         FLAG.fLKG_in   = 1;      % Leakages Path 2 and 3      0: Disable        1: Enable
         FLAG.fLKG_plot = 0;      % Plot Leakages              0: Disable        1: Enable
