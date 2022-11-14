@@ -27,7 +27,7 @@ function CALL_SVEC_M135K
         %% FLAG %%
         FLAG.fDBG      = 1;      % Controls                   0: User only      1: User + Developer
         FLAG.fSTR      = 0;      % Stress Analysis            0: Disable        1: Enable
-        FLAG.fSDP      = 0;      % Suction&Discharge Model    0: Disable        1: Enable 
+        FLAG.fSDP      = 1;      % Suction&Discharge Model    0: Disable        1: Enable 
         FLAG.fLKG      = 1;      % Leakages                   0: Disable        1: Enable
         FLAG.fLKG_in   = 1;      % Leakages Path 2 and 3      0: Disable        1: Enable
         FLAG.fLKG_plot = 0;      % Plot Leakages              0: Disable        1: Enable
@@ -57,7 +57,7 @@ function CALL_SVEC_M135K
         PROCESS.rpm     = 1500;     % [rpm]   Rotational speed
         PROCESS.p_suc   = 1;        % [barA]  Suction pressure
         PROCESS.p_del   = 8.5;      % [barA]  Delivery pressure - (use NaN for geometric pressure)
-        PROCESS.T_suc   = 28;       % [°C]    Gas inlet temperature
+        PROCESS.T_suc   = 20;       % [°C]    Gas inlet temperature
         PROCESS.T_0     = 20.0;     % [°C]    Reference temperature for energy balance
         PROCESS.p_0     = 1;        % [barA]  Reference pressure
         PROCESS.f_b     = 0.008;    % [adim]  Bushing friction coefficient

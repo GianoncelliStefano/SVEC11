@@ -1,4 +1,4 @@
-function [p_in,T_in,deltap_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp1,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP,fOK)
+function [p_in,T_in,deltap_inlet,deltaT_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INport_Amin,V_comp1,MM_g,n_van,rpm,c,c_v,coeff_invalve,pipe,cpitch,ct,lenght,D_up,D_do,roughness,mu_g,coeff_infilter,fSDP,fOK)
 % This function sets up the iterative approach useful for the evaluation of
 % the actual temperature and pressure at the inlet of the air-end section 
 %
@@ -42,7 +42,8 @@ function [p_in,T_in,deltap_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,INport_Amax,INp
          p_in         = p_suc;                                % when the intake model is not active, the air-end inlet pressure is equal to the suction one
          T_in         = T_suc;                                % when the intake model is not active, the air-end inlet temperature is equal to the suction one
          deltap_inlet = 0;                                    % when the intake model is not active, the pressure drop during the suction process is null 
-    case 1                                                   % intake process model activated
+         deltaT_inlet = 0;
+     case 1                                                   % intake process model activated
  port_type   = "inlet";                                       
  R_g         = SX_Constant({'UniGasConstant'})/MM_g;          % specific gas constant [J/kg K];
  gamma       = (c_v + R_g)/c_v;                               % heat capacity ratio
@@ -78,8 +79,9 @@ checkloop = err < toll_d;                                 % loop exit condition
    end
  
  deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  delta_pport;        % intake process overall pressure loss 
- deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]  % intake process partial pressure loss on each component
-
+ deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]; % intake process partial pressure loss on each component
+ deltaT_inlet = T_suc - T_in; 
+ 
  %% CHECK %%
     f1 = ((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))/((gamma*R_g*T_in)^0.5) > 0.3;                       % Mach number check  
     f2 = ((p_in/(R_g*T_in))*((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))*min(D_do,D_up))/mu_g < 4000;     % Reynolds number check
