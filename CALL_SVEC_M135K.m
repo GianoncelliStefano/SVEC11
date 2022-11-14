@@ -15,7 +15,7 @@ function CALL_SVEC_M135K
     IO.fMODE    = 1;      % Save\Load mode     0: Load Simul     1: New Simul
 
     IO.fDRPT    = 1;      % Display Report     0: Disable        1: Enable
-    IO.fSRPT    = 0;      % Save Report        0: Disable        1: Enable
+    IO.fSRPT    = 1;      % Save Report        0: Disable        1: Enable
     IO.fDPLT    = 0;      % Display Plots      0: Disable        1: Enable
     IO.fSPLT    = 0;      % Save Plots         0: Disable        1: Enable
     IO.ext      = 'fig';  % Extension to save plot (see 'saveas' function for more)
@@ -86,7 +86,7 @@ function CALL_SVEC_M135K
         % ||  'M80B'  |  'M86D'  | 'M135H'  |  'M111C'   ||                |           ||
         % ||  'M80D'  |  'M86E'  | 'M170K'  |  'M135L'   ||                |           ||
         % ||  'M215'  |  'M135B' | 
-        Machine_selected = 'M135A';
+        Machine_selected = 'M135K';
 
         if strcmp(Machine_selected,'UserDefined')
             GEOMETRY.c = 1;     % stator geometry     1: circular   2: elliptical stator;
