@@ -31,7 +31,8 @@ function [p_in,T_in,deltap_inlet,deltaT_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,IN
 % OUTPUT
 % p_in           [Pa]       : inlet pressure at the begginning of the closed cell process (inlet of the air-end)
 % T_in           [K]        : inlet temperature at the begginning of the closed cell process (inlet of the air-end)
-% deltap_inlet   [Pa]       : inlet process pressure loss (p_in - p_suc)
+% deltap_inlet   [Pa]       : inlet process pressure variation     (p_in - p_suc)
+% deltaT_inlet   [K]        : inlet precoess temperature variation (T_in - T_suc)
 % fOK            [bool]     : OK flag (1 - no problem occourred, 0 - a problem have been spotted, SVEC will exit the simulation)
 %
 % HISTORY:  Gianoncelli_Genoni: creation of the file, see thesis for further information
@@ -61,7 +62,7 @@ function [p_in,T_in,deltap_inlet,deltaT_inlet,fOK] = S3_PRE_inlet(p_suc,T_suc,IN
 
 [p_dv,T_dv,delta_pvalve]     = Concentrated_Losses(fb,coeff_invalve,m_gas_guess,p_dp,T_dp,MM_g,gamma);                                      % intake valve concentrated pressure drop  | dv: downstrem valve
 
-[Pout,Tout,delta_pport]      = PortModel(p_dv , T_dv , INport_Amax , INport_Amin, gamma, R_g,  m_gas_guess, port_type);                     % inlet port pressure drop
+[Pout,Tout,delta_pport]      = PortModel(p_dv,T_dv,INport_Amax,INport_Amin,gamma,R_g,m_gas_guess,port_type);                                % inlet port pressure drop
 
 mast      = Pout*V_comp1/(R_g*Tout)*c*n_van*rpm/60;       % updated mass flow rate                                                                           
 err       = abs(mast-m_gas_guess);                        % residual error on the control variable
@@ -78,10 +79,10 @@ checkloop = err < toll_d;                                 % loop exit condition
       end
    end
  
- deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  delta_pport;        % intake process overall pressure loss 
- deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]; % intake process partial pressure loss on each component
- deltaT_inlet = T_suc - T_in; 
- 
+ deltap_inlet = delta_pfilter + delta_pduct + delta_pvalve +  delta_pport;        % intake process overall pressure variation
+ deltaT_inlet = T_suc - T_in;                                                     % intake process overall temperature variation
+ deltap       = [delta_pfilter , delta_pduct , delta_pvalve, delta_pport , Pout]; % developers: intake process partial pressure loss on each component
+  
  %% CHECK %%
     f1 = ((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))/((gamma*R_g*T_in)^0.5) > 0.3;                       % Mach number check  
     f2 = ((p_in/(R_g*T_in))*((4*mast)/((p_in/(R_g*T_in))*pi*min(D_do^2,D_up^2)))*min(D_do,D_up))/mu_g < 4000;     % Reynolds number check

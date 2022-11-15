@@ -25,10 +25,10 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 % k_g [W/mK]          : thermal conductivity of gas
 % k_l [W/mK]          : thermal conductivity of oil
 % MM_g [kg/mol]       : molar mass of gas
-% T_suc [K]           : initial temperature of gas
+% T_in [K]            : initial gas temperature (air-end suction)
 % T_0 [K]             : reference temperature for energy balance
 % p_0 [Pa]            : reference pressure
-% p_suc [Pa]          : suction pressure
+% p_in [Pa]           : initial gas pressure (air-end suction)
 % p_del  [Pa]         : delivery pressure
 % mu_g [Pa s]         : gas dynamic viscosity
 % V_cell [m3]         : cell volume
@@ -62,6 +62,8 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 % UndRlx [-]          : under-relaxation factor for ierative loops
 % fLKG [-]            : leakage flag
 % fLKG_in [-]         : internal leakages flag
+% deltap_inlet [Pa]   : inlet process pressure variation (p_in - p_suc)
+% deltaT_inlet [Pa]   : inlet process temperature variation (T_in - T_suc) 
 %
 % OUTPUT
 % m_g [kg]            : mass of gas in the first closed chamber
@@ -77,7 +79,7 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 % sigma_o [N/m]       : surface tension of injected oil for each nozzles
 % m_inj_nzl [kg]      : mass of oil injected by each nozzle
 % V_inj_nzl [m3]      : mass of oil injected by each nozzle
-% V_inj_cls [m3]        : volume of oil injected by each nozzle class
+% V_inj_cls [m3]      : volume of oil injected by each nozzle class
 % epsm [-]            : ratio between mass of injected oil and gas mass trapped in a cell for each injector
 % DU [J]              : variation of internal energy for gas-liquid mixture
 % n_pltr [-]          : polytropic index
@@ -94,7 +96,11 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 % fOK [bool]          : OK flag (1 - no problem occourred, 0 - a problem have been spotted, SVEC will exit the simulation)
 %
 % NOTE : Hypothesis of adiabatic walls -> DU == Lvano
-% HISTORY : V10.1_DeFranco_Genoni_Gianoncelli: review of suction and delivery times (further information available in the thesis) 
+% HISTORY : V10.1_DeFranco_Genoni_Gianoncelli: review of suction and delivery times. 
+%           V11_Genoni_Gianoncelli           : changed T_suc (which is now meant as suction from ambient) in T_in (air-end suction), after addition of inlet process. 
+%                                              Introduced deltap_inlet and deltaT_inlet to update mass and volumetric flow rate.
+%                                              (further information available in the thesis)
+
     %% DEFINITIONS %%
     fOK         = 1;                                 % process control flag (1- no problem occoured    0- an error eccoured)
     lkg_cls = 1;
@@ -216,11 +222,11 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
         mu_o       = NaN(1,M);         % oil dynamic viscosity for each nozzle [Pa s]
         sigma_o    = NaN(1,M);         % oil surface tension for each nozzle [N m]
 
-        % conductivity and compressibility factor during suction
+        % conductivity and compressibility factor during air-end suction
         switch model_g
             case 'simple'
-                k_suc = k_g;
-                Z_suc = 1;
+                k_in = k_g;
+                Z_in = 1;
             case 'full'
                 [quality(1)] = ThermoPhysProps('Q',T_in,p_in,name4prop,molcomp_g,propSource,0,'PR','ChungEtal',1e-3,80);
                 if quality(1) == 0
@@ -228,11 +234,11 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
                     SX_Logfile ('e',{lastwarn});
                     fOK = 0;
                 else
-                    [k_suc,Z_suc] = ThermoPhysProps('kv,zf',T_in,p_in,name4prop,molcomp_g,propSource,0,'PR','ChungEtal',1e-3,80);
+                    [k_in,Z_in] = ThermoPhysProps('kv,zf',T_in,p_in,name4prop,molcomp_g,propSource,0,'PR','ChungEtal',1e-3,80);
                 end
         end
         
-        % suction preallocation
+        % air-end suction preallocation
         for j = 1:(nzls_suc)
             if fOK
                 map_cls(cls_indx==j) = 1;        % increment counter for total disclosed nozzle classes
@@ -240,7 +246,7 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
                 [rho_o(j),nu_o(j),mu_o(j),sigma_o(j),fOK] = S3_OilProperties(Tl_in(j),T_ref,rho_ref,nu_40,nu_100); % unpack oil properties for current nozzle
                 
                 if strcmp(NOZZLES.type_nz(j), 'un')
-                    m_g_ideal    = p_in*V_comp(1)/(R_g*T_in*Z_suc);               % ideal trapped gas mass [kg]
+                    m_g_ideal    = p_in*V_comp(1)/(R_g*T_in*Z_in);                  % ideal trapped gas mass [kg]
                     D_g          = NOZZLES.specs{j}.D_g;                            % class droplet diameter, from user input [m]
                     f_g          = NOZZLES.specs{j}.f_g;                            % class frequency [-]
                     m_inj_nzl(j) = NOZZLES.specs{j}.eps_m*m_g_ideal; % mass of oil injected in cell [kg]
@@ -309,8 +315,8 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
         Vleak_o_cls0_C      = zeros(Npt_comp-1,1);          % leaking oil TO the cell accounting only for oil class 0 [m^3/s]
         Vleak_o_cls0_E      = zeros(Npt_comp-1,1);          % leaking oil TO the cell accounting only for oil class 0 [m^3/s]
         % Mass [kg]
-        Dmg_VS_comp         = zeros(Npt_comp,1);          % cumulated gas mass variation due to leakage through path 3 along compression process [kg]
-        Dmg_PE_comp         = zeros(Npt_comp,1);          % cumulated gas mass variation due to leakage through path 2 along compression process [kg]
+        Dmg_VS_comp         = zeros(Npt_comp,1);            % cumulated gas mass variation due to leakage through path 3 along compression process [kg]
+        Dmg_PE_comp         = zeros(Npt_comp,1);            % cumulated gas mass variation due to leakage through path 2 along compression process [kg]
         
         Loop_In  = 1; % outer iteration flag
         Niter_In = 1; %Iteration counter
@@ -326,17 +332,17 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
             V_cell_cls(1,lkg_cls) = V_cell_cls(1,lkg_cls) + Vleak_o_suc_C*dt_vano;
             m_cell_cls(1,map_cls==1) = V_cell_cls(1,map_cls==1).*repelem(rho_o(1:nzls_suc),num_cls(1:nzls_suc)); % initial oil mass in cell for each class [kg]
             
-            h     = Nu*k_suc./Dg;                          % update heat transfer coefficient for each class [W/m^2K]
+            h     = Nu*k_in./Dg;                           % update heat transfer coefficient for each class [W/m^2K]
             Bi    = h/k_l.*Dg/6;                           % update biot number for each class [adim]
             Al    = pi.*Dg.^2;                             % update droplet surface for each class [m2]
             Vdrop = pi.*Dg.^3/6;                           % update droplet volume for each class [m3]
             % NS    = V_cell_cls(1,1:end)./Vdrop;  update number of droplets for each class [adim]
             
             % air mass calculation
-            V_l(1) = sum(V_cell_cls(1,map_cls==1));  % volume of oil trapped in first cell of the machine [m3]
-            m_l(1) = sum(m_cell_cls(1,map_cls==1));  % mass of oil trapped in first cell of the machine [kg]
-            V_g(1) = (V_comp(1)-V_l(1));             % volume of gas trapped in the first cell of the machine [m3]
-            m_g(1) = p_in*V_g(1)/(R_g*T_in*Z_suc); % mass of air elaborated by first cell of the machine [kg]
+            V_l(1) = sum(V_cell_cls(1,map_cls==1));        % volume of oil trapped in first cell of the machine [m3]
+            m_l(1) = sum(m_cell_cls(1,map_cls==1));        % mass of oil trapped in first cell of the machine [kg]
+            V_g(1) = (V_comp(1)-V_l(1));                   % volume of gas trapped in the first cell of the machine [m3]
+            m_g(1) = p_in*V_g(1)/(R_g*T_in*Z_in);          % mass of air elaborated by first cell of the machine [kg]
             
 
             m_g = m_g(1) + Dmg_VS_comp + Dmg_PE_comp;
@@ -345,10 +351,10 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
             
             %% CLOSED-CHAMBER ITERATIVE SOLUTION %%
             % Initialization
-            T_g(1)    = T_in;                                % starting temperature [K]
-            p_comp(1) = p_in;                                % starting pressure [Pa]
-            Z(1)      = Z_suc;                                % compressibility factor during suction [-]
-            v_spec(1) = V_g(1)/m_g(1);                        % starting specific volume [m^3/kg]
+            T_g(1)    = T_in;                              % starting closed-chamber temperature [K]
+            p_comp(1) = p_in;                              % starting closed-chamber pressure [Pa]
+            Z(1)      = Z_in;                              % compressibility factor during suction [-]
+            v_spec(1) = V_g(1)/m_g(1);                     % starting specific volume [m^3/kg]
             
             % Looping over discretization points
             for i = 1:(Npt_comp-1)
@@ -757,10 +763,10 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
                   
             %these are the variables needed to obtain the plot of leakages
             if fLKG
-            Flow_RS=[Fleak_g.*ones(Npt_cell,1)./(p_in./(R_g.*T_in.*Z_suc)).*1e3.*60; zeros(Npt_cell*5,1); -Fleak_g.*ones(Npt_cell+1,1)./(p_in./(R_g.*T_in.*Z_suc)).*1e3.*60];
+            Flow_RS=[Fleak_g.*ones(Npt_cell,1)./(p_in./(R_g.*T_in.*Z_in)).*1e3.*60; zeros(Npt_cell*5,1); -Fleak_g.*ones(Npt_cell+1,1)./(p_in./(R_g.*T_in.*Z_in)).*1e3.*60];
             if fLKG_in
-            Flow_VS=[zeros(1,pos_SucClose-2*Npt_cell) ,Flow_VS./(p_in./(R_g.*T_in.*Z_suc)).*1e3.*60, zeros(1,length(theta_vane)-(pos_DisOpen-Npt_cell)-1) ] ;
-            Flow_PE=Flow_PE./(p_in./(R_g.*T_in.*Z_suc)).*1e3.*60;
+            Flow_VS=[zeros(1,pos_SucClose-2*Npt_cell) ,Flow_VS./(p_in./(R_g.*T_in.*Z_in)).*1e3.*60, zeros(1,length(theta_vane)-(pos_DisOpen-Npt_cell)-1) ] ;
+            Flow_PE=Flow_PE./(p_in./(R_g.*T_in.*Z_in)).*1e3.*60;
             end
             end
  
@@ -836,16 +842,16 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
     Tl_in_cls = arrayfun(@(x) T_l(find(~isnan(T_l(:,x)),1),x), 1:K);
 
     % Power evaluation
-    Pind_ist(1:end-1) = -p_comp(1:end-1).*diff(V_g)/dt; % Indicated Power [W] - computed from PV
-    dQprocess = sum(dQ,2,'omitnan');                    % Heat flow rate [W] for each discretization point
+    Pind_ist(1:end-1) = -p_comp(1:end-1).*diff(V_g)/dt;   % Indicated Power [W] - computed from PV
+    dQprocess = sum(dQ,2,'omitnan');                      % Heat flow rate [W] for each discretization point
 
     % compression work evaluation
     DUgas = sum(dUgas,'omitnan');
     DUliq = sum(dUliq,'omitnan');
-    DU    = DUgas + DUliq;                                  % mixture compression work - analytical [J]
+    DU    = DUgas + DUliq;                                % mixture compression work - analytical [J]
     DH_g  = sum(dH_g,'omitnan');
     DH_o  = sum(dH_o,'omitnan');
-    Lvano = sum(L_g,'omitnan');                            % mixture compression work - numerical [J]
+    Lvano = sum(L_g,'omitnan');                           % mixture compression work - numerical [J]
     % Lvano = dt*trapz(Pind_ist(1:end-1));
     
     % compression heat evaluation
@@ -884,28 +890,28 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
         s_lkg = 1;
     end
     
-    m_gas_Id = (p_in+deltap_inlet)*V_comp(1)/(R_g*(T_in+deltaT_inlet)*Z_suc)*c*n_van*rpm/60;                                      % ideal gas mass flow rate [kg/s]
-    m_gas    = m_g(end)*c*n_van*rpm/60 + s_lkg*Fleak_g + s_lkg*Fleak_g_VS_dis + Fleak_g_PE_dis; % real gas mass flow rate [kg/s]
-    q_gas_Id = (m_gas_Id)/((p_in+deltap_inlet)/(R_g*(T_in+deltaT_inlet)*Z_suc)); 
+    m_gas_Id = (p_in+deltap_inlet)*V_comp(1)/(R_g*(T_in+deltaT_inlet)*Z_in)*c*n_van*rpm/60;                            % ideal gas mass flow rate [kg/s]
+    m_gas    = m_g(end)*c*n_van*rpm/60 + s_lkg*Fleak_g + s_lkg*Fleak_g_VS_dis + Fleak_g_PE_dis;                        % real gas mass flow rate [kg/s]
+    q_gas_Id = (m_gas_Id)/((p_in+deltap_inlet)/(R_g*(T_in+deltaT_inlet)*Z_in)); 
     
 
     % ideal gas volumetric flow rate [m3/s]
-    q_gas    = (m_gas)/((p_in+deltap_inlet)/(R_g*(T_in+deltaT_inlet)*Z_suc));                                               % real gas volumetric flow rate [m3/s]
-    m_liq_Id = sum(m_inj_nzl)*c*n_van*rpm/60;                                                   % mass flow rate of injected oil [kg/s]
-    m_liq    = sum(m_cell_cls(end,1:end),'omitnan') + s_lkg*Fleak_o + s_lkg*Fleak_o_VS_dis + Fleak_o_PE_dis;                 % real oil mass flow rate [kg/s]
+    q_gas    = (m_gas)/((p_in+deltap_inlet)/(R_g*(T_in+deltaT_inlet)*Z_in));                                           % real gas volumetric flow rate [m3/s]
+    m_liq_Id = sum(m_inj_nzl)*c*n_van*rpm/60;                                                                          % mass flow rate of injected oil [kg/s]
+    m_liq    = sum(m_cell_cls(end,1:end),'omitnan') + s_lkg*Fleak_o + s_lkg*Fleak_o_VS_dis + Fleak_o_PE_dis;           % real oil mass flow rate [kg/s]
     epsm     = m_inj_nzl./mean(m_g);
    
     % epsm for each injector
     % =====================================================================
     % =====================================================================
-    Q_g_RS_suction = Fleak_g/(p_in/(R_g*T_in*Z_suc));
-    Q_g_PE_suction = Fleak_g_PE_suc/(p_in/(R_g*T_in*Z_suc));
-    Q_g_VS_suction = Fleak_g_VS_suc/(p_in/(R_g*T_in*Z_suc));
-    Q_g_PE_closed_cell = Fleak_g_PE_cell_closed/(p_in/(R_g*T_in*Z_suc));
-    Q_g_VS_closed_cell = Fleak_g_VS_cell_closed/(p_in/(R_g*T_in*Z_suc));
-    Q_g_RS_dis = Fleak_g/(p_in/(R_g*T_in*Z_suc));
-    Q_g_PE_dis = Fleak_g_PE_dis/(p_in/(R_g*T_in*Z_suc));
-    Q_g_VS_dis = Fleak_g_VS_dis/(p_in/(R_g*T_in*Z_suc));
+    Q_g_RS_suction = Fleak_g/(p_in/(R_g*T_in*Z_in));
+    Q_g_PE_suction = Fleak_g_PE_suc/(p_in/(R_g*T_in*Z_in));
+    Q_g_VS_suction = Fleak_g_VS_suc/(p_in/(R_g*T_in*Z_in));
+    Q_g_PE_closed_cell = Fleak_g_PE_cell_closed/(p_in/(R_g*T_in*Z_in));
+    Q_g_VS_closed_cell = Fleak_g_VS_cell_closed/(p_in/(R_g*T_in*Z_in));
+    Q_g_RS_dis = Fleak_g/(p_in/(R_g*T_in*Z_in));
+    Q_g_PE_dis = Fleak_g_PE_dis/(p_in/(R_g*T_in*Z_in));
+    Q_g_VS_dis = Fleak_g_VS_dis/(p_in/(R_g*T_in*Z_in));
     % =====================================================================
     % =====================================================================    
       

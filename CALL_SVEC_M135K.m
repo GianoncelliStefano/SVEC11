@@ -161,7 +161,7 @@ function CALL_SVEC_M135K
         % ||  'AG05AAX024_2'  |     'AG05AAX022'    || 
         % ||  'AG05AAX024_3'  | 'FPG082505_B080067' || 
         
-        Intake_filter_selected = 'FPG082505_B080067';
+        Intake_filter_selected = 'AG05AAX025';
 
         if strcmp(Intake_filter_selected,'UserDefined')
             INTAKE.coeff_infilter        =  [106320,-1537.7,1.5604];     
@@ -182,14 +182,14 @@ function CALL_SVEC_M135K
         INTAKE.roughness  = 12.5;                                 % roughness [micron]    
         INTAKE.cpitch     = 0.222*(INTAKE.D_up+INTAKE.D_do)*0.5;  % corrugated pitch [mm]
         INTAKE.ct         = 0.070*(INTAKE.D_up+INTAKE.D_do)*0.5;  % corrugation height [mm]       
-        
+      
         % INTAKE VALVE SELECTION %      
         % Available intake valves:
         % ||  'RB60'  | 'RB115' |  'RC50'  |  'RBC120'  |  'RH38'  |  'RH70' || 
         % ||  'RB80'  | 'RB140' |  'RC95'  |  'RBC160'  |  'RH50'  |  'C40'  || 
         % ||  'RB90'  | 'RB200' |  'RBC90' |  'RH30'    |  'RH60'  |  'C90'  || 
         
-        Intake_valve_selected = 'RH60';
+        Intake_valve_selected = 'RB80';
 
         if strcmp(Intake_valve_selected,'UserDefined')
             INTAKE.coeff_invalve       =  [106320,-1537.7,1.5604];
