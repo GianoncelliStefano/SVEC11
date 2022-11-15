@@ -97,7 +97,7 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
 %
 % NOTE : Hypothesis of adiabatic walls -> DU == Lvano
 % HISTORY : V10.1_DeFranco_Genoni_Gianoncelli: review of suction and delivery times. 
-%           V11_Genoni_Gianoncelli           : changed T_suc (which is now meant as suction from ambient) in T_in (air-end suction), after addition of inlet process. 
+%           V11_Genoni_Gianoncelli           : distinction between T_suc (which is now meant as suction from ambient) in T_in (air-end suction), after the addition of the inlet process. 
 %                                              Introduced deltap_inlet and deltaT_inlet to update mass and volumetric flow rate.
 %                                              (further information available in the thesis)
 
@@ -230,7 +230,7 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
             case 'full'
                 [quality(1)] = ThermoPhysProps('Q',T_in,p_in,name4prop,molcomp_g,propSource,0,'PR','ChungEtal',1e-3,80);
                 if quality(1) == 0
-                    warning('S3_Thermodynamics:quality','Two phase inlet flow: undefined system with T_suc and P_suc (correlated).');
+                    warning('S3_Thermodynamics:quality','Two phase inlet flow: undefined system with T_in and P_in (correlated).');
                     SX_Logfile ('e',{lastwarn});
                     fOK = 0;
                 else
@@ -271,7 +271,7 @@ function [Q_g_RS_dis,Q_g_PE_dis,Q_g_VS_dis,Q_g_RS_suction,Q_g_PE_suction,Q_g_VS_
         % ===============================================================
         % PREALLOCATION
         % Thermodynamics
-        p_comp_C        = p_in*ones(Npt_comp,1);                   % pressure vector at previous inner iteration [Pa]  p_comp_C = p_suc.*(V_comp(1)./V_comp').^(c_p/c_v); (option: considering an adiabatic process as first guess, but problems occur in case of oil free)
+        p_comp_C        = p_in*ones(Npt_comp,1);                   % pressure vector at previous inner iteration [Pa]  p_comp_C = p_in.*(V_comp(1)./V_comp').^(c_p/c_v); (option: considering an adiabatic process as first guess, but problems occur in case of oil free)
         T_leak_g        = T_in*ones(Npt_comp+2*Npt_cell,1);        % Temperature vector for gas leaking enthalpy flow along the compression [K]
         T_leak_o        = zeros(Npt_comp+2*Npt_cell,1);             % Temperature vector for oil leaking enthalpy flow along the compression [K]
         p_leak          = p_in*ones(Npt_comp+2*Npt_cell,1);        % Pressure vector for leaking enthalpy flow along the compression [Pa]
